@@ -43,6 +43,14 @@ export class Hook {
 			this.body.frictionAir = 0.05;
 
 			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0015));
+
+			this.scene.add.tween({
+				targets: this.telegraph,
+				alpha: 0,
+				duration: 1000,
+
+				onComplete: () => this.telegraph.destroy()
+			})
 		}
 	}
 
@@ -105,5 +113,9 @@ export class Hook {
 			pointA: { x: connectPoint.x, y: connectPoint.y },
 			pointB: { x: -playerConnectPoint.x, y: -playerConnectPoint.y }
 		});
+
+
+		//destroy the hook
+		this.image.destroy();
 	}
 }

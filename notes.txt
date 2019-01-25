@@ -26,3 +26,6 @@ TextStyle object
 ScaleManager for resizing to window size
 Hack here: http://www.html5gamedevs.com/topic/40267-scaling-the-game-to-fit-inner-window/
 and here: https://github.com/samme/phaser3-faq/wiki#how-do-i-scaleresize-the-game-canvas
+
+Tween has no type (scene.add.tween)
+https://rexrainbow.github.io/phaser3-rex-notes/docs/site/tween/

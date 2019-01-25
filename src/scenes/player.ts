@@ -12,6 +12,8 @@ export class Player {
 	haveCharged = false;
 	chargeStartTime = 0;
 	gfx: Phaser.GameObjects.Graphics;
+
+	chargeTelegraph?: Phaser.GameObjects.Image;
 	
 	constructor(private scene: GameScene, private padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
@@ -41,19 +43,36 @@ export class Player {
 		if (!p) {
 			return;
 		}
-		p.setAxisThreshold(0.3);
+		p.setAxisThreshold(0);
 		let controllerAngle = new Phaser.Math.Vector2(p.axes[0].getValue(), p.axes[1].getValue());
-		this.gfx.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) - 90);
+		let isDirectional = true;
+		if (controllerAngle.length() < 0.3) {
+			controllerAngle.x = 0;
+			controllerAngle.y = 0;
+			isDirectional = false;
+		}
+
+		if (isDirectional) {
+			this.gfx.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) - 90);
+		}
+
+
 		if (p.R1) {
 			if (!this.preparingToCharge) {
 				this.preparingToCharge = true;
 				this.chargeStartTime = time;
 				this.chargeAngle = controllerAngle.clone();
+
+				this.chargeTelegraph = this.scene.add.image(this.image.x, this.image.y, 'player-charge-telegraph');
+				this.chargeTelegraph.alpha = 0.5;
+				this.chargeTelegraph.setOrigin(0.5, 1.5);
 			}
 		}
+
 		if (this.preparingToCharge && !this.haveCharged && time > this.chargeStartTime + chargePrepareTime) {
 			this.image.applyForce(controllerAngle.clone().scale(1.1));
 			this.haveCharged = true;
+			this.chargeTelegraph.destroy();
 		}
 		if (this.haveCharged && time > this.chargeStartTime + chargePrepareTime + chargeCooldown) {
 			this.preparingToCharge = false;
@@ -62,6 +81,13 @@ export class Player {
 		}
 		if (!this.preparingToCharge) {
 			this.image.applyForce(controllerAngle.clone().scale(0.02));
+		}
+
+		if (this.chargeTelegraph) {
+			this.chargeTelegraph.setPosition(this.image.x, this.image.y);
+			if (isDirectional) {
+				this.chargeTelegraph.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) + 90);
+			}
 		}
 	}
 }
