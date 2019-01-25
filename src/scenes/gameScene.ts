@@ -1,5 +1,6 @@
 import { Player } from "./player";
 import { Hook } from "./hook";
+import { HookManager } from "./hookManager";
 
 const wallVisibleWidth = 50;
 
@@ -12,11 +13,13 @@ export class GameScene extends Phaser.Scene {
 	sideWalls: Matter.Body[];
 	players: Player[];
 
-	hooks = new Array<Hook>();
+
+	intensity = 1;
 	
 	shadowGroup: Phaser.GameObjects.Group;
 	telegraphGroup: Phaser.GameObjects.Group;
 	normalGroup: Phaser.GameObjects.Group;
+	hookManager: HookManager;
 
 	constructor() {
 		super({ key: 'game' });
@@ -40,6 +43,8 @@ export class GameScene extends Phaser.Scene {
 		this.normalGroup = this.add.group();
 		this.telegraphGroup = this.add.group();
 
+		this.hookManager = new HookManager(this);
+
 		this.sideWalls = [
 			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
 			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {})
@@ -57,6 +62,10 @@ export class GameScene extends Phaser.Scene {
 		];
 
 		this.matter.world.on('collisionstart', (ev, bodyA, bodyB) => this.collisionStart(ev, bodyA, bodyB));
+
+
+		//debug hack thing
+		this.matter.add.mouseSpring({});
 	}
 
 
@@ -67,18 +76,12 @@ export class GameScene extends Phaser.Scene {
 
 		this.moveScene(time, delta);
 
-		if (this.hooks.length == 0) {
-			this.matter.add.mouseSpring({});
-			let hook = new Hook(this, new Phaser.Math.Vector2(500, 1080), new Phaser.Math.Vector2(this.players[0].image.x, this.players[1].image.y));
-			hook.showTelegraph();
-			this.hooks.push(hook);
-		}
+		this.hookManager.update(time, delta);
 
 		this.players.forEach(p => {
 			p.update(time, delta);
 		});
 
-		this.hooks.forEach(h => h.update(time, delta));
 	}
 
 	lastWallUpdate = 0;
@@ -87,7 +90,6 @@ export class GameScene extends Phaser.Scene {
 		const amount = (delta / 1000) * 100;
 
 		this.cameras.main.scrollY -= amount;
-		console.log(this.cameras.main.scrollY);
 
 
 		//Periodically move the walls up
