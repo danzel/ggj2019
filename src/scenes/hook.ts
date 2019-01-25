@@ -30,7 +30,6 @@ export class Hook {
 	update(time: number, delta: number) {
 		if (this.startedTelegraph && this.scene.time.now > this.startedTelegraph + telegraphTime) {
 			this.startedTelegraph = undefined;
-			console.log('shoot');
 
 			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'hook');
 			this.image.setCircle(radius, {});
@@ -56,7 +55,6 @@ export class Hook {
 
 	connectToPlayer(player: Player) {
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
-		console.log('distance', distance);
 
 		const defaultPieceLength = 50;
 		const ropeWidth = 20;
@@ -87,7 +85,6 @@ export class Hook {
 			let center = start.clone().add(halfLengthVector);
 
 			let rope = this.scene.matter.add.image(center.x, center.y, 'rope');
-			console.log(center.x, center.y);
 
 			rope.setRectangle(ropeWidth, pieceLengthWithOverlap, {
 				chamfer: 5,

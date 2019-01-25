@@ -1,6 +1,8 @@
 import { Player } from "./player";
 import { Hook } from "./hook";
 
+const wallVisibleWidth = 50;
+
 interface CollisionBody {
 	hook?: Hook;
 	player?: Player;
@@ -38,10 +40,9 @@ export class GameScene extends Phaser.Scene {
 		this.normalGroup = this.add.group();
 		this.telegraphGroup = this.add.group();
 
-		const wallVisibleWidth = 50;
 		this.sideWalls = [
-			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 1000, {}),
-			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 1000, {})
+			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
+			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {})
 		];
 		this.sideWalls.forEach(w => {
 			w.friction = 0;
@@ -80,17 +81,32 @@ export class GameScene extends Phaser.Scene {
 		this.hooks.forEach(h => h.update(time, delta));
 	}
 
+	lastWallUpdate = 0;
+
 	moveScene(time: number, delta: number) {
 		const amount = (delta / 1000) * 100;
 
 		this.cameras.main.scrollY -= amount;
+		console.log(this.cameras.main.scrollY);
 
-		//this.sideWalls.forEach(w => w. w.position.y -= amount);
+
+		//Periodically move the walls up
+		this.lastWallUpdate += delta;
+		if (this.lastWallUpdate > 1000) {
+
+			this.sideWalls.forEach(w => this.matter.world.remove(w, false));
+			this.sideWalls = [
+				<any>this.matter.add.rectangle(0, 1080 / 2 + this.cameras.main.scrollY, wallVisibleWidth * 2, 1080 * 3, {}),
+				<any>this.matter.add.rectangle(1920, 1080 / 2 + this.cameras.main.scrollY, wallVisibleWidth * 2, 1080 * 3, {})
+			];
+
+			this.lastWallUpdate = time;
+		}
 
 	}
 
 	collisionStart(ev: any, bodyA: CollisionBody, bodyB: CollisionBody) {
-		console.log('col', ev, bodyA, bodyB);
+		//console.log('col', ev, bodyA, bodyB);
 
 		if (bodyA.hook && bodyB.player) {
 			bodyA.hook.connectToPlayer(bodyB.player);
