@@ -40,8 +40,8 @@ export class GameScene extends Phaser.Scene {
 
 		const wallVisibleWidth = 50;
 		this.sideWalls = [
-			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
-			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {})
+			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 1000, {}),
+			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 1000, {})
 		];
 		this.sideWalls.forEach(w => {
 			w.friction = 0;
@@ -64,6 +64,8 @@ export class GameScene extends Phaser.Scene {
 			return;
 		}
 
+		this.moveScene(time, delta);
+
 		if (this.hooks.length == 0) {
 			this.matter.add.mouseSpring({});
 			let hook = new Hook(this, new Phaser.Math.Vector2(500, 1080), new Phaser.Math.Vector2(this.players[0].image.x, this.players[1].image.y));
@@ -76,6 +78,15 @@ export class GameScene extends Phaser.Scene {
 		});
 
 		this.hooks.forEach(h => h.update(time, delta));
+	}
+
+	moveScene(time: number, delta: number) {
+		const amount = (delta / 1000) * 100;
+
+		this.cameras.main.scrollY -= amount;
+
+		//this.sideWalls.forEach(w => w. w.position.y -= amount);
+
 	}
 
 	collisionStart(ev: any, bodyA: CollisionBody, bodyB: CollisionBody) {
