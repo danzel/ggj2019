@@ -1,8 +1,11 @@
 import { GameScene } from "./gameScene";
+import { Hook } from "./hook";
 
 export const chargePrepareTime = 500;
 export const chargeCooldown = 500;
 export const playerRadius = 50;
+
+export const requiredShakeToBreak = 50;
 
 export class Player {
 	image: Phaser.Physics.Matter.Image;
@@ -13,7 +16,14 @@ export class Player {
 	chargeStartTime = 0;
 	gfx: Phaser.GameObjects.Graphics;
 
+	shakeToBreakAmount = 0;
+
 	chargeTelegraph?: Phaser.GameObjects.Image;
+
+	attachedHooks = new Array<Hook>();
+	shakeToBreak: Phaser.GameObjects.Text;
+
+	lastControllerPos: Phaser.Math.Vector2;
 	
 	constructor(private scene: GameScene, private padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
@@ -35,6 +45,18 @@ export class Player {
 		this.body.frictionAir = 0.1;
 		this.body.friction = 1;
 		this.body.restitution = 1;
+
+		this.shakeToBreak = this.scene.add.text(100, 100, "SHAKE TO BREAK", {
+			fontFamily: 'ZCOOL KuaiLe',
+			fontSize: '40px',
+			color: '#ffffff',
+			stroke: '#000000',
+			strokeThickness: 2,
+			//align:'center'
+		});
+		this.shakeToBreak.setOrigin(0.5, 2);
+		this.scene.overlayGroup.add(this.shakeToBreak);
+		this.shakeToBreak.setVisible(false);
 	}
 
 	update(time: number, delta: number) {
@@ -57,6 +79,21 @@ export class Player {
 		}
 
 
+		if (this.attachedHooks.length > 0) {
+			this.shakeToBreakAmount += Math.abs(this.lastControllerPos.x - controllerAngle.x);
+			
+			if (this.shakeToBreakAmount > requiredShakeToBreak) {
+				this.shakeToBreakAmount = 0;
+
+				this.attachedHooks.shift().detachFromPlayer();
+			}
+		} else {
+			this.shakeToBreakAmount = 0;
+		}
+		this.lastControllerPos = controllerAngle.clone();
+
+
+		//Charging
 		if (p.R1) {
 			if (!this.preparingToCharge) {
 				this.preparingToCharge = true;
@@ -68,7 +105,6 @@ export class Player {
 				this.chargeTelegraph.setOrigin(0.5, 1.5);
 			}
 		}
-
 		if (this.preparingToCharge && !this.haveCharged && time > this.chargeStartTime + chargePrepareTime) {
 			this.image.applyForce(controllerAngle.clone().scale(1.1));
 			this.haveCharged = true;
@@ -83,11 +119,16 @@ export class Player {
 			this.image.applyForce(controllerAngle.clone().scale(0.02));
 		}
 
+
+		//Graphics updates
 		if (this.chargeTelegraph) {
 			this.chargeTelegraph.setPosition(this.image.x, this.image.y);
 			if (isDirectional) {
 				this.chargeTelegraph.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) + 90);
 			}
 		}
+
+		this.shakeToBreak.setVisible((this.attachedHooks.length > 0));
+		this.shakeToBreak.setPosition(this.image.x, this.image.y);
 	}
 }

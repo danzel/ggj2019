@@ -15,13 +15,13 @@ export class LoadingScene extends Phaser.Scene {
 		this.load.image('hook-telegraph', require('../assets/hook/telegraph.png'))
 		this.load.image('player-charge-telegraph', require('../assets/player/chargetelegraph.png'))
 
-		/*WebFont.load({
+		WebFont.load({
 			custom: {
 				families: ['ZCOOL KuaiLe']
 			},
 			active: () => this.haveLoaded()
-		})*/
-		this.loadedCount = 1;
+		})
+		//this.loadedCount = 1;
 	}
 
 	create() {

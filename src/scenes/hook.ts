@@ -10,6 +10,7 @@ export class Hook {
 	startedTelegraph?: number;
 	image: Phaser.Physics.Matter.Image;
 	body: import("c:/Users/danzel/Desktop/Code/ggj2019/matter").Body;
+	constraintToPlayer: MatterJS.Constraint;
 
 
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
@@ -55,6 +56,7 @@ export class Hook {
 	}
 
 	connectToPlayer(player: Player) {
+		player.attachedHooks.push(this);
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 
 		const defaultPieceLength = 50;
@@ -107,13 +109,19 @@ export class Hook {
 
 
 		//Connect them to the player
-		this.scene.matter.add.constraint(previous, player.body, 0, 0.5, {
+		this.constraintToPlayer = this.scene.matter.add.constraint(previous, player.body, 0, 0.5, {
 			pointA: { x: connectPoint.x, y: connectPoint.y },
 			pointB: { x: -playerConnectPoint.x, y: -playerConnectPoint.y }
 		});
 
+		//TODO: Push the player away from the hook
+
 
 		//destroy the hook
 		this.image.destroy();
+	}
+
+	detachFromPlayer() {
+		this.scene.matter.world.removeConstraint(this.constraintToPlayer, false);
 	}
 }

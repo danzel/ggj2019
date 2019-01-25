@@ -20,6 +20,7 @@ export class GameScene extends Phaser.Scene {
 	telegraphGroup: Phaser.GameObjects.Group;
 	normalGroup: Phaser.GameObjects.Group;
 	hookManager: HookManager;
+	overlayGroup: Phaser.GameObjects.Group;
 
 	constructor() {
 		super({ key: 'game' });
@@ -27,14 +28,7 @@ export class GameScene extends Phaser.Scene {
 
 	create() {
 		console.log('create game');
-		/*
-		this.add.sprite(300, 200, 'phaser');
 
-		this.add.text(100, 100, "test2", {
-			fontFamily: 'ZCOOL KuaiLe',
-			fontSize: '40px',
-			color: '#ff0000'
-		});*/
 
 		//this.cameras.main.shake(1000);
 		//new Phaser.Cameras.Scene2D.Effects.Shake(this.cameras.main).start(1000);
@@ -42,6 +36,7 @@ export class GameScene extends Phaser.Scene {
 		this.shadowGroup = this.add.group();
 		this.normalGroup = this.add.group();
 		this.telegraphGroup = this.add.group();
+		this.overlayGroup = this.add.group();
 
 		this.hookManager = new HookManager(this);
 
