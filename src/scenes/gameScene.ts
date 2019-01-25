@@ -1,90 +1,24 @@
-const chargePrepareTime = 500;
-const chargeCooldown = 500;
+import { Player } from "./player";
+import { Hook } from "./hook";
 
-class Player {
-	image: Phaser.Physics.Matter.Image;
-	body: Matter.Body;
-
-	chargeAngle: Phaser.Math.Vector2;
-	preparingToCharge = false;
-	haveCharged = false;
-	chargeStartTime = 0;
-	gfx: Phaser.GameObjects.Graphics;
-
-	constructor(private scene: Phaser.Scene, private padIndex: number) {
-		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
-		this.image.setCircle(50, {});
-
-		this.gfx = scene.add.graphics({ x: 100, y: 100 });
-		this.gfx.lineStyle(5, 0xff0000, 1.0);
-		this.gfx.fillStyle(0x00ff00, 1.0);
-		this.gfx.beginPath();
-		this.gfx.lineTo(0, 0);
-		this.gfx.lineTo(0, 60);
-		this.gfx.closePath();
-		this.gfx.strokePath();
-
-		this.body = <Matter.Body>this.image.body;
-		this.body.frictionAir = 0.1;
-		this.body.friction = 1;
-		this.body.restitution = 1;
-	}
-
-	update(time: number, delta: number) {
-
-		this.gfx.setPosition(this.image.x, this.image.y);
-
-		let p = this.scene.input.gamepad.getPad(this.padIndex);
-
-		if (!p) {
-			return;
-		}
-
-		p.setAxisThreshold(0.3);
-		let controllerAngle = new Phaser.Math.Vector2(
-			p.axes[0].getValue(),
-			p.axes[1].getValue()
-		);
-		this.gfx.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) - 90);
-
-
-		if (p.R1) {
-
-			if (!this.preparingToCharge) {
-				this.preparingToCharge = true;
-				this.chargeStartTime = time;
-
-				this.chargeAngle = controllerAngle.clone();
-			}
-		}
-
-		if (this.preparingToCharge && !this.haveCharged && time > this.chargeStartTime + chargePrepareTime) {
-			this.image.applyForce(controllerAngle.clone().scale(1.1));
-
-			this.haveCharged = true;
-		}
-
-		if (this.haveCharged && time > this.chargeStartTime + chargePrepareTime + chargeCooldown) {
-			this.preparingToCharge = false;
-			this.haveCharged = false;
-			this.chargeStartTime = 0;
-		}
-
-		//console.log(p.axes[0].getValue(), p.axes[1].getValue());
-		if (!this.preparingToCharge) {
-			this.image.applyForce(controllerAngle.clone().scale(0.02));
-		}
-	}
+interface CollisionBody {
+	hook?: Hook;
+	player?: Player;
 }
 
 export class GameScene extends Phaser.Scene {
 	sideWalls: Matter.Body[];
 	players: Player[];
 
+	hooks = new Array<Hook>();
+	
+	shadowGroup: Phaser.GameObjects.Group;
+	telegraphGroup: Phaser.GameObjects.Group;
+	normalGroup: Phaser.GameObjects.Group;
+
 	constructor() {
 		super({ key: 'game' });
 	}
-
 
 	create() {
 		console.log('create game');
@@ -99,6 +33,10 @@ export class GameScene extends Phaser.Scene {
 
 		//this.cameras.main.shake(1000);
 		//new Phaser.Cameras.Scene2D.Effects.Shake(this.cameras.main).start(1000);
+
+		this.shadowGroup = this.add.group();
+		this.normalGroup = this.add.group();
+		this.telegraphGroup = this.add.group();
 
 		const wallVisibleWidth = 50;
 		this.sideWalls = [
@@ -115,7 +53,9 @@ export class GameScene extends Phaser.Scene {
 			new Player(this, 1),
 			new Player(this, 2),
 			new Player(this, 3),
-		]
+		];
+
+		this.matter.world.on('collisionstart', (ev, bodyA, bodyB) => this.collisionStart(ev, bodyA, bodyB));
 	}
 
 
@@ -124,9 +64,28 @@ export class GameScene extends Phaser.Scene {
 			return;
 		}
 
+		if (this.hooks.length == 0) {
+			this.matter.add.mouseSpring({});
+			let hook = new Hook(this, new Phaser.Math.Vector2(500, 1080), new Phaser.Math.Vector2(this.players[0].image.x, this.players[1].image.y));
+			hook.showTelegraph();
+			this.hooks.push(hook);
+		}
+
 		this.players.forEach(p => {
 			p.update(time, delta);
-		})
+		});
 
+		this.hooks.forEach(h => h.update(time, delta));
+	}
+
+	collisionStart(ev: any, bodyA: CollisionBody, bodyB: CollisionBody) {
+		console.log('col', ev, bodyA, bodyB);
+
+		if (bodyA.hook && bodyB.player) {
+			bodyA.hook.connectToPlayer(bodyB.player);
+		}
+		if (bodyA.player && bodyB.hook) {
+			bodyB.hook.connectToPlayer(bodyA.player);
+		}
 	}
 }

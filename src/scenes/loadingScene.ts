@@ -12,6 +12,8 @@ export class LoadingScene extends Phaser.Scene {
 	preload() {
 		this.load.image('phaser', require('../assets/phaser.png'))
 
+		this.load.image('hook-telegraph', require('../assets/hook/telegraph.png'))
+
 		/*WebFont.load({
 			custom: {
 				families: ['ZCOOL KuaiLe']
