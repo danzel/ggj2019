@@ -1,0 +1,28 @@
+Install/Run:
+
+nodejs, yarn
+yarn
+yarn start
+
+
+Refs:
+https://github.com/danzel/ggj2018
+https://github.com/digitsensitive/phaser3-typescript
+
+Phaser 3 Samples
+https://labs.phaser.io/index.html?dir=&q=
+
+Text style
+https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Text.TextStyle.html
+
+
+
+
+Phase TS Wishlist
+=================
+
+TextStyle object
+
+ScaleManager for resizing to window size
+Hack here: http://www.html5gamedevs.com/topic/40267-scaling-the-game-to-fit-inner-window/
+and here: https://github.com/samme/phaser3-faq/wiki#how-do-i-scaleresize-the-game-canvas
