@@ -1,5 +1,6 @@
 import { GameScene } from "./gameScene";
 import { Hook } from "./hook";
+import { HealthBar } from "./healthBar";
 
 export const chargePrepareTime = 500;
 export const chargeCooldown = 500;
@@ -24,6 +25,7 @@ export class Player {
 	shakeToBreak: Phaser.GameObjects.Text;
 
 	lastControllerPos: Phaser.Math.Vector2;
+	shakeBar: HealthBar;
 	
 	constructor(private scene: GameScene, private padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
@@ -57,6 +59,9 @@ export class Player {
 		this.shakeToBreak.setOrigin(0.5, 2);
 		this.scene.overlayGroup.add(this.shakeToBreak);
 		this.shakeToBreak.setVisible(false);
+
+
+		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000);
 	}
 
 	update(time: number, delta: number) {
@@ -128,7 +133,10 @@ export class Player {
 			}
 		}
 
-		this.shakeToBreak.setVisible((this.attachedHooks.length > 0));
+		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
 		this.shakeToBreak.setPosition(this.image.x, this.image.y);
+		
+		this.shakeBar.setVisible(this.attachedHooks.length > 0);
+		this.shakeBar.update(this.image.x, this.image.y - 40, this.shakeToBreakAmount / requiredShakeToBreak);
 	}
 }
