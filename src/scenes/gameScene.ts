@@ -15,7 +15,7 @@ export class GameScene extends Phaser.Scene {
 
 
 	intensity = 1;
-	
+
 	shadowGroup: Phaser.GameObjects.Group;
 	telegraphGroup: Phaser.GameObjects.Group;
 	normalGroup: Phaser.GameObjects.Group;
@@ -61,7 +61,7 @@ export class GameScene extends Phaser.Scene {
 			new Player(this, 3),
 		];
 
-		this.matter.world.on('collisionstart', (ev, bodyA, bodyB) => this.collisionStart(ev, bodyA, bodyB));
+		this.matter.world.on('collisionstart', (ev) => this.collisionStart(ev));
 
 
 		//debug hack thing
@@ -107,14 +107,18 @@ export class GameScene extends Phaser.Scene {
 
 	}
 
-	collisionStart(ev: any, bodyA: CollisionBody, bodyB: CollisionBody) {
-		//console.log('col', ev, bodyA, bodyB);
+	collisionStart(ev: Matter.IEventCollision<Matter.Engine>) {
 
-		if (bodyA.hook && bodyB.player) {
-			bodyA.hook.connectToPlayer(bodyB.player);
-		}
-		if (bodyA.player && bodyB.hook) {
-			bodyB.hook.connectToPlayer(bodyA.player);
-		}
+		ev.pairs.forEach(p => {
+			let bodyA = <CollisionBody>p.bodyA;
+			let bodyB = <CollisionBody>p.bodyB;
+
+			if (bodyA.hook && bodyB.player) {
+				bodyA.hook.connectToPlayer(bodyB.player);
+			}
+			if (bodyA.player && bodyB.hook) {
+				bodyB.hook.connectToPlayer(bodyA.player);
+			}
+		});
 	}
 }

@@ -24,8 +24,7 @@ class Game extends Phaser.Game {
 					gravity: {
 						x: 0,
 						y: 0
-					},
-					enableSleeping: false
+					}
 				}
 			}
 		});
