@@ -39,7 +39,7 @@ export class Hook {
 			this.body = <Matter.Body>this.image.body;
 			(<any>this.body).hook = this;
 
-			//this.body.isSensor = true;
+			this.body.isSensor = true;
 			this.body.frictionAir = 0.05;
 
 			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0015));
