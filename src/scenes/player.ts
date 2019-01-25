@@ -26,8 +26,10 @@ export class Player {
 
 	lastControllerPos: Phaser.Math.Vector2;
 	shakeBar: HealthBar;
+
+	missileCount = 0;
 	
-	constructor(private scene: GameScene, private padIndex: number) {
+	constructor(private scene: GameScene, public padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
 		this.image.setCircle(playerRadius, {});
 		scene.normalGroup.add(this.image);
@@ -62,6 +64,11 @@ export class Player {
 
 
 		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000);
+	}
+
+	vibrate() {
+		var pad = this.scene.input.gamepad.getPad(this.padIndex);
+		(<any>pad.vibration).playEffect(pad.vibration.type, { duration: 100, strongMagnitude: 1, weakMagnitude: 1});
 	}
 
 	update(time: number, delta: number) {

@@ -57,6 +57,8 @@ export class Hook {
 
 	connectToPlayer(player: Player) {
 		player.attachedHooks.push(this);
+		player.vibrate();
+
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 
 		const defaultPieceLength = 50;
