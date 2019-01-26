@@ -37,9 +37,7 @@ export class Hook {
 			this.startedTelegraph = undefined;
 
 			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'harpoon');
-			console.log(this.telegraph.angle);
 			let frame = (Math.round((this.telegraph.angle + 270) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
-			console.log(frame);
 			this.image.setFrame(frame);
 
 
@@ -70,10 +68,12 @@ export class Hook {
 		player.vibrate();
 
 		const velocity = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
-		this.scene.forcesToApply.push({
-			force: new Phaser.Math.Vector2(0, -1).scale(velocity / 30),
-			player
-		});
+		if (!player.isDead) {
+			this.scene.forcesToApply.push({
+				force: new Phaser.Math.Vector2(0, -1).scale(velocity / 30),
+				player
+			});
+		}
 
 		this.source.y += 1000;
 

@@ -48,7 +48,9 @@ export class Player {
 	tracks: Phaser.GameObjects.Image;
 
 	turboTime = -99999;
-	repulserTime = -99999
+	repulserTime = -99999;
+
+	isDead = false
 
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
@@ -95,6 +97,10 @@ export class Player {
 		this.smokeEmitter.setAngle([0, 360]);
 	}
 
+	die() {
+		this.isDead = true;
+	}
+
 	vibrate() {
 		var pad = this.scene.input.gamepad.getPad(this.padIndex);
 		(<any>pad.vibration).playEffect(pad.vibration.type, { duration: 100, strongMagnitude: 1, weakMagnitude: 1 });
@@ -130,6 +136,9 @@ export class Player {
 		}
 		p.setAxisThreshold(0);
 		let controllerAngle = new Phaser.Math.Vector2(p.axes[0].getValue(), p.axes[1].getValue());
+		if (this.isDead) {
+			controllerAngle = new Phaser.Math.Vector2(0, 0);
+		}
 		let isDirectional = true;
 		if (controllerAngle.length() < 0.3) {
 			controllerAngle.x = 0;

@@ -8,19 +8,27 @@ import { PowerupManager, PowerupBox } from "./powerupManager";
 const wallVisibleWidth = 50;
 
 interface CollisionBody {
+	deathWall?: boolean;
 	hook?: Hook;
 	missile?: Missile;
 	player?: Player;
 	powerupBox?: PowerupBox;
 }
 
+interface ThingToMove {
+	go: Phaser.GameObjects.Sprite;
+	x: number;
+	y: number;
+}
+
 export class GameScene extends Phaser.Scene {
 	sideWalls: Phaser.Physics.Matter.Sprite[];
 	topWall: Phaser.Physics.Matter.Sprite;
+	deathWall: Phaser.Physics.Matter.Sprite;
 	players: Player[];
 
 
-	intensity = 0.1;
+	intensity: number;
 
 	hookManager: HookManager;
 	missileManager: MissileManager;
@@ -34,7 +42,13 @@ export class GameScene extends Phaser.Scene {
 	smokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	houseSmokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+
+	startTime: number;
 	timerText: Phaser.GameObjects.Text;
+
+	gameIsOver: boolean;
+
+	keepOnScreenThings: Array<ThingToMove>;
 
 	constructor() {
 		super({ key: 'game' });
@@ -43,6 +57,12 @@ export class GameScene extends Phaser.Scene {
 	create() {
 		console.log('create game');
 
+		this.intensity = 0.1;
+		this.gameIsOver = false;
+		this.keepOnScreenThings = new Array<ThingToMove>();
+
+		
+		this.forcesToApply.length = 0;
 
 		//this.cameras.main.shake(1000);
 		//new Phaser.Cameras.Scene2D.Effects.Shake(this.cameras.main).start(1000);
@@ -72,6 +92,16 @@ export class GameScene extends Phaser.Scene {
 		bWall.isStatic = true;
 		bWall.friction = 0;
 
+		this.deathWall = this.matter.add.sprite(1920 / 2, 1080 + 20, '');
+		this.deathWall.setRectangle(1920, 40, {});
+		bWall = <Matter.Body>this.deathWall.body;
+		bWall.isStatic = true;
+		bWall.friction = 0;
+		this.deathWall.setSensor(true);
+		(<any>bWall).deathWall = true;
+
+
+
 		this.houseSmokeParticles = this.add.particles('small_smoke');
 		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
 
@@ -88,6 +118,7 @@ export class GameScene extends Phaser.Scene {
 		//debug hack thing
 		this.matter.add.mouseSpring({});
 
+		this.startTime = 0;
 		this.timerText = this.add.text(1920 / 2, 40, "TODO", {
 			fontFamily: 'Staatliches',
 			fontSize: '60px',
@@ -115,12 +146,19 @@ export class GameScene extends Phaser.Scene {
 		if (this.input.gamepad.total == 0) {
 			return;
 		}
-		if (time < 20000){
-			this.intensity = 0.5 + time / 40000;
-		} else if (time < 40000) {
-			this.intensity = 1 + (time - 20000) / 40000;
+		
+		if (this.startTime == 0) {
+			this.startTime = time;
+		}
+
+		let elapsed = (time - this.startTime);
+
+		if (elapsed < 20000) {
+			this.intensity = 0.5 + elapsed / 40000;
+		} else if (elapsed < 40000) {
+			this.intensity = 1 + (elapsed - 20000) / 40000;
 		} else {
-			this.intensity = 1.5 + (time - 40000) / 60000;
+			this.intensity = 1.5 + (elapsed - 40000) / 60000;
 		}
 
 		this.backgrounds.forEach(b => {
@@ -129,7 +167,7 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.timerText.text = (time / 1000).toFixed(1);
+		this.timerText.text = ((time - this.startTime) / 1000).toFixed(1);
 
 
 		this.moveScene(time, delta);
@@ -158,7 +196,7 @@ export class GameScene extends Phaser.Scene {
 						}
 					}
 				})
-				
+
 				this.hookManager.hooks.forEach(o => {
 					if (o.image) {
 
@@ -175,22 +213,66 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		/*while (true) {
-			var x = Math.random() * 1920;
-			var y = Math.random() * 1080 + this.cameras.main.scrollY;
+		console.log(this.gameIsOver);
+		if (!this.gameIsOver) {
+			let deadSum = this.players.map(p => p.isDead ? 1 : 0).reduce((a, b) => a + b, 0);
 
-			var diff = new Phaser.Math.Vector2(x - this.players[0].image.x, y - this.players[0].image.y);
+			this.gameIsOver = (deadSum >= 3);
+			if (deadSum == 3) {
+				let w = this.players.findIndex(p => !p.isDead);
 
-			if (diff.length() > 500) {
-				//console.log(x, y);
-				this.smokeEmitter.setPosition(x, y);
-				//this.smokeEmitter
-				//this.smokeParticles.emitParticleAt(x, y);
-				break;
+				let winText = this.add.text(1920 / 2, 400, "Player " + (1 + w) + " wins!", {
+					fontFamily: 'Staatliches',
+					fontSize: '90px',
+					color: '#ffffff',
+					stroke: '#000000',
+					strokeThickness: 8,
+				});
+				winText.setOrigin(0.5, 0.5);
+				winText.setDepth(Depths.mostOverlay);
+				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
+				
+
+			} else if (deadSum == 4) {
+
+				let winText = this.add.text(1920 / 2, 400, "Draw!", {
+					fontFamily: 'Staatliches',
+					fontSize: '90px',
+					color: '#ffffff',
+					stroke: '#000000',
+					strokeThickness: 8,
+				});
+				winText.setOrigin(0.5, 0.5);
+				winText.setDepth(Depths.mostOverlay);
+				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
 			}
-		}*/
 
+			if (this.gameIsOver) {
 
+				let g = this.add.graphics({
+					fillStyle: {
+						color: 0x000000
+					}
+				});
+				g.alpha = 0;
+				g.fillRect(0, 0, 1920, 1080);
+				g.setDepth(Depths.overlay);
+
+				this.add.tween({
+					targets: g,
+					alpha: 1,
+					duration: 5000,
+				})
+				this.keepOnScreenThings.push({
+					go: <any>g,
+					x: 0, y: 0
+				})
+
+				setTimeout(() => {
+					this.scene.start('game');
+				}, 5000);
+			}
+		}
 
 		this.forcesToApply.forEach(f => {
 			f.player.image.applyForce(f.force);
@@ -217,9 +299,13 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		this.topWall.setPosition(1920 / 2, this.cameras.main.scrollY - 20);
+		this.deathWall.setPosition(1920 / 2, this.cameras.main.scrollY + 1080 + 20);
 
 		this.timerText.setPosition(1920 / 2, this.cameras.main.scrollY + 30);
 
+		this.keepOnScreenThings.forEach(t => {
+			t.go.setPosition(t.x, this.cameras.main.scrollY + t.y);
+		});
 	}
 
 	collisionStart(ev: Matter.IEventCollision<Matter.Engine>) {
@@ -247,6 +333,13 @@ export class GameScene extends Phaser.Scene {
 			}
 			else if (bodyA.powerupBox && bodyB.player) {
 				this.powerUpManager.handleCollision(bodyB.player, bodyA.powerupBox);
+			}
+
+			else if (bodyA.player && bodyB.deathWall) {
+				bodyA.player.die();
+			}
+			else if (bodyB.player && bodyA.deathWall) {
+				bodyB.player.die();
 			}
 		});
 	}
