@@ -7,7 +7,8 @@ const telegraphTime = 1200;
 const radius = 30;
 
 export enum Powerup {
-	Turbo,
+	Turbo = 0,
+	Repluser = 1,
 }
 
 export class PowerupBox {
@@ -16,7 +17,7 @@ export class PowerupBox {
 	image: Phaser.Physics.Matter.Image;
 	body: Matter.Body;
 
-	powerup = Powerup.Turbo
+	powerup = <Powerup>Math.floor(Math.random() * 2);
 
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
 	}
@@ -37,7 +38,7 @@ export class PowerupBox {
 		if (this.startedTelegraph && this.scene.time.now > this.startedTelegraph + telegraphTime) {
 			this.startedTelegraph = undefined;
 
-			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'box');
+			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'crates', Math.floor(Math.random() * 7) * 4 + this.powerup);
 			this.image.setCircle(radius, {});
 			this.image.setDepth(Depths.normal);
 
@@ -77,10 +78,10 @@ export class PowerupManager {
 				sourceX = 1920 + 50;
 			}
 
-			let box  =new PowerupBox(this.scene, new Phaser.Math.Vector2(sourceX, y - 100), new Phaser.Math.Vector2(x, y));
+			let box = new PowerupBox(this.scene, new Phaser.Math.Vector2(sourceX, y - 100), new Phaser.Math.Vector2(x, y));
 			box.showTelegraph();
 			this.boxes.push(box);
-			
+
 			this.lastSpawn = time;
 		}
 

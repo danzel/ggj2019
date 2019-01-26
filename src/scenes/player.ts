@@ -8,6 +8,7 @@ export const chargePrepareTime = 500;
 export const chargeCooldown = 500;
 export const playerRadius = 50;
 export const timeTurboLastsFor = 5000;
+export const timeRepulserLastsFor = 5000;
 
 export const requiredShakeToBreak = 50;
 
@@ -47,6 +48,7 @@ export class Player {
 	tracks: Phaser.GameObjects.Image;
 
 	turboTime = -99999;
+	repulserTime = -99999
 
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
@@ -104,9 +106,16 @@ export class Player {
 			case Powerup.Turbo:
 				this.turboTime = this.scene.time.now;
 				break;
+			case Powerup.Repluser:
+				this.repulserTime = this.scene.time.now;
+				break;
 			default:
 				throw new Error("Implement powerup");
 		}
+	}
+
+	hasRepulser() {
+		return (this.scene.time.now < this.repulserTime + timeRepulserLastsFor);
 	}
 
 	update(time: number, delta: number) {

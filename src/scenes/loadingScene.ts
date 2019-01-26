@@ -29,6 +29,10 @@ export class LoadingScene extends Phaser.Scene {
 			frameWidth: 256,
 			frameHeight: 256
 		});
+		this.load.spritesheet('crates', require('../assets/box/crates.png'), {
+			frameWidth: 128,
+			frameHeight: 128
+		});
 
 		WebFont.load({
 			custom: {

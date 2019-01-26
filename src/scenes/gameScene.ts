@@ -113,6 +113,39 @@ export class GameScene extends Phaser.Scene {
 
 		this.players.forEach(p => {
 			p.update(time, delta);
+
+			if (p.hasRepulser()) {
+				const maxDist = 300;
+				let pp = new Phaser.Math.Vector2(p.image.x, p.image.y)
+
+				this.players.forEach(o => {
+					if (o != p) {
+
+						var diff = new Phaser.Math.Vector2(o.image.x, o.image.y).subtract(pp);
+						let length = diff.length();
+						let pc = 1 - length / maxDist;
+						if (pc > 0) {
+							diff.normalize();
+							diff.scale(pc * pc * 0.03);
+							o.image.applyForce(diff);
+						}
+					}
+				})
+				
+				this.hookManager.hooks.forEach(o => {
+					if (o.image) {
+
+						var diff = new Phaser.Math.Vector2(o.image.x, o.image.y).subtract(pp);
+						let length = diff.length();
+						let pc = 1 - length / maxDist;
+						if (pc > 0) {
+							diff.normalize();
+							diff.scale(pc * pc * 0.03);
+							o.image.applyForce(diff);
+						}
+					}
+				})
+			}
 		});
 
 		/*while (true) {
