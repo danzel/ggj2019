@@ -85,6 +85,13 @@ export class PowerupManager {
 		}
 
 		this.boxes.forEach(b => b.update(time, delta));
+
+		for (var i = this.boxes.length - 1; i >= 0; i--) {
+			if (this.boxes[i].image && this.boxes[i].image.y - this.scene.cameras.main.scrollY > 1500) {
+				this.boxes[i].image.destroy();
+				this.boxes.splice(i, 1);
+			}
+		}
 	}
 
 	handleCollision(player: Player, powerupBox: PowerupBox) {

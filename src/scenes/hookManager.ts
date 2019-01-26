@@ -31,5 +31,12 @@ export class HookManager {
 			hook.showTelegraph();
 			this.hooks.push(hook);
 		}
+
+		for (var i = this.hooks.length - 1; i >= 0; i--){
+			if (this.hooks[i].isExpired()) {
+				this.hooks[i].destroy();
+				this.hooks.splice(i, 1);
+			}
+		}
 	}
 }

@@ -13,6 +13,8 @@ export class Hook {
 	body: import("c:/Users/danzel/Desktop/Code/ggj2019/matter").Body;
 	constraintToPlayer: MatterJS.Constraint;
 
+	lastRope: Phaser.Physics.Matter.Image;
+	ropePieces = new Array<Phaser.Physics.Matter.Image>();
 
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
 	}
@@ -54,6 +56,7 @@ export class Hook {
 				onComplete: () => this.telegraph.destroy()
 			})
 		}
+
 	}
 
 	connectToPlayer(player: Player) {
@@ -115,9 +118,12 @@ export class Hook {
 
 			start = start.add(lengthVector);
 			previous = body;
+
+			this.ropePieces.push(rope);
+			this.lastRope = rope;
 		}
 
-
+		
 		//Connect them to the player
 		this.constraintToPlayer = this.scene.matter.add.constraint(previous, player.body, 0, 0.5, {
 			pointA: { x: connectPoint.x, y: connectPoint.y },
@@ -129,9 +135,29 @@ export class Hook {
 
 		//destroy the hook
 		this.image.destroy();
+		this.image = undefined;
 	}
 
 	detachFromPlayer() {
 		this.scene.matter.world.removeConstraint(this.constraintToPlayer, false);
+	}
+
+	isExpired(): boolean {
+		if (this.image) {
+			return (this.image.y - this.scene.cameras.main.scrollY) > 1500;
+		}
+
+		if (this.lastRope) {
+			return (this.lastRope.y - this.scene.cameras.main.scrollY) > 1500;
+		}
+	}
+
+	destroy() {
+		if (this.image) {
+			this.image.destroy();
+		}
+
+		this.ropePieces.forEach(r => r.destroy());
+		this.ropePieces.length = 0;
 	}
 }
