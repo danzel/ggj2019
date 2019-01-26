@@ -3,6 +3,7 @@ import { Hook } from "./hook";
 import { HookManager } from "./hookManager";
 import { MissileManager, Missile } from "./missileManager";
 import { Depths } from "./depths";
+import { PowerupManager, PowerupBox } from "./powerupManager";
 
 const wallVisibleWidth = 50;
 
@@ -10,6 +11,7 @@ interface CollisionBody {
 	hook?: Hook;
 	missile?: Missile;
 	player?: Player;
+	powerupBox?: PowerupBox;
 }
 
 export class GameScene extends Phaser.Scene {
@@ -21,6 +23,7 @@ export class GameScene extends Phaser.Scene {
 
 	hookManager: HookManager;
 	missileManager: MissileManager;
+	powerUpManager: PowerupManager;
 
 	forcesToApply = new Array<{
 		player: Player,
@@ -50,6 +53,7 @@ export class GameScene extends Phaser.Scene {
 
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);
+		this.powerUpManager = new PowerupManager(this);
 
 		this.sideWalls = [
 			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
@@ -105,6 +109,7 @@ export class GameScene extends Phaser.Scene {
 
 		this.hookManager.update(time, delta);
 		this.missileManager.update(time, delta);
+		this.powerUpManager.update(time, delta);
 
 		this.players.forEach(p => {
 			p.update(time, delta);
@@ -175,6 +180,13 @@ export class GameScene extends Phaser.Scene {
 			}
 			else if (bodyA.missile && bodyB.player) {
 				this.missileManager.handleCollision(bodyB.player, bodyA.missile);
+			}
+
+			else if (bodyA.player && bodyB.powerupBox) {
+				this.powerUpManager.handleCollision(bodyA.player, bodyB.powerupBox);
+			}
+			else if (bodyA.powerupBox && bodyB.player) {
+				this.powerUpManager.handleCollision(bodyB.player, bodyA.powerupBox);
 			}
 		});
 	}

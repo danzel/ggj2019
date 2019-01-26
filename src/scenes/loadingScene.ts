@@ -11,6 +11,7 @@ export class LoadingScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image('hook-telegraph', require('../assets/hook/telegraph.png'))
+		this.load.image('powerup-telegraph', require('../assets/box/telegraph.png'))
 		this.load.image('player-charge-telegraph', require('../assets/player/chargetelegraph.png'))
 
 		this.load.image('player', require('../assets/player/test.png'))

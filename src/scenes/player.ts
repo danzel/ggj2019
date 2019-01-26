@@ -2,10 +2,12 @@ import { GameScene } from "./gameScene";
 import { Hook } from "./hook";
 import { HealthBar } from "./healthBar";
 import { Depths } from "./depths";
+import { Powerup } from "./powerupManager";
 
 export const chargePrepareTime = 500;
 export const chargeCooldown = 500;
 export const playerRadius = 50;
+export const timeTurboLastsFor = 5000;
 
 export const requiredShakeToBreak = 50;
 
@@ -43,7 +45,9 @@ export class Player {
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	lastDirectionalPos: Phaser.Math.Vector2;
 	tracks: Phaser.GameObjects.Image;
-	
+
+	turboTime = -99999;
+
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
 		this.tracks.setDepth(Depths.tracks);
@@ -90,7 +94,17 @@ export class Player {
 
 	vibrate() {
 		var pad = this.scene.input.gamepad.getPad(this.padIndex);
-		(<any>pad.vibration).playEffect(pad.vibration.type, { duration: 100, strongMagnitude: 1, weakMagnitude: 1});
+		(<any>pad.vibration).playEffect(pad.vibration.type, { duration: 100, strongMagnitude: 1, weakMagnitude: 1 });
+	}
+
+	grantPowerup(powerup: Powerup) {
+		switch (powerup) {
+			case Powerup.Turbo:
+				this.turboTime = this.scene.time.now;
+				break;
+			default:
+				throw new Error("Implement powerup");
+		}
 	}
 
 	update(time: number, delta: number) {
@@ -118,7 +132,7 @@ export class Player {
 
 		if (this.attachedHooks.length > 0) {
 			this.shakeToBreakAmount += this.lastControllerPos.clone().subtract(controllerAngle).length();
-			
+
 			if (this.shakeToBreakAmount > requiredShakeToBreak) {
 				this.shakeToBreakAmount = 0;
 
@@ -154,11 +168,11 @@ export class Player {
 			this.chargeStartTime = 0;
 		}
 		if (!this.preparingToCharge) {
-			let foce = controllerAngle.clone().scale(0.012);
-			if (p.B) {
-				foce.scale(3);
+			let force = controllerAngle.clone().scale(0.012);
+			if (time < this.turboTime + timeTurboLastsFor) {
+				force.scale(3);
 			}
-			this.image.applyForce(foce);
+			this.image.applyForce(force);
 		}
 
 		if (this.missilePress.isJustDown(p.A) && this.missileCount > 0 && isDirectional) {
@@ -185,7 +199,7 @@ export class Player {
 
 		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
 		this.shakeToBreak.setPosition(this.image.x, this.image.y);
-		
+
 		this.shakeBar.setVisible(this.attachedHooks.length > 0);
 		this.shakeBar.update(this.image.x, this.image.y - 40, this.shakeToBreakAmount / requiredShakeToBreak);
 
