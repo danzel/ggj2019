@@ -120,7 +120,7 @@ export class Hook {
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 
 		const defaultPieceLength = 20;
-		const ropeWidth = 8;
+		const ropeWidth = 6;
 		const pieceCount = Math.floor(distance / defaultPieceLength);// * 1.4;
 		const pieceLength = distance / pieceCount;
 
@@ -138,7 +138,7 @@ export class Hook {
 
 		//initial anchor
 		var previous = <Matter.Body>this.scene.matter.add.circle(this.source.x, this.source.y, 50, {}, undefined);
-		previous.frictionAir = 0.08;
+		previous.frictionAir = 0.065;
 		//previous.isStatic = true;
 
 		let connectPoint = angleVector.clone().scale(pieceLength / 2);
