@@ -16,7 +16,6 @@ export class Hook {
 	lastRope: Phaser.Physics.Matter.Image;
 	ropePieces = new Array<Phaser.Physics.Matter.Image>();
 
-	thi
 	chainTile: Phaser.GameObjects.TileSprite;
 
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
@@ -24,12 +23,8 @@ export class Hook {
 
 	showTelegraph() {
 		this.telegraph = this.scene.add.tileSprite((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 80, 1900, 'hook-telegraph');
-		//TODO this.telegraph.blendMode = Phaser.BlendModes.COLOR_BURN;
 		this.telegraph.setDepth(Depths.telegraph);
-		this.telegraph.alpha = 0.5;
-
 		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) + 90;
-
 		this.telegraph.alpha = 0;
 		this.scene.add.tween({
 			targets: this.telegraph,
@@ -77,6 +72,7 @@ export class Hook {
 
 			this.chainTile = this.scene.add.tileSprite(0, 0, 10, 1000, 'chain_tile');
 			this.chainTile.setDepth(Depths.normal);
+			this.chainTile.alpha = 0.5;
 		}
 
 		if (this.chainTile && this.image) {
