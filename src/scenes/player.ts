@@ -54,7 +54,7 @@ export class Player {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
 		this.tracks.setDepth(Depths.tracks);
 
-		this.image = scene.matter.add.image(350 * (1 + padIndex), 100, 'home_1');
+		this.image = scene.matter.add.image(350 * (1 + padIndex), 100, 'home_' + (1 + padIndex));
 		this.image.setCircle(playerRadius, {});
 		this.image.setDepth(Depths.normal);
 
@@ -90,6 +90,7 @@ export class Player {
 		});
 		this.smokeEmitter.setSpeedY(-60);
 		//this.smokeEmitter.setSpeedX([-10, 10]);
+		//this.smokeEmitter.setBlendMode(Phaser.BlendModes.ADD);
 		this.smokeEmitter.setFrequency(100);
 		this.smokeEmitter.setAngle([0, 360]);
 	}
@@ -116,6 +117,10 @@ export class Player {
 
 	hasRepulser() {
 		return (this.scene.time.now < this.repulserTime + timeRepulserLastsFor);
+	}
+
+	hasTurbo() {
+		return (this.scene.time.now < this.turboTime + timeTurboLastsFor);
 	}
 
 	update(time: number, delta: number) {
@@ -154,6 +159,13 @@ export class Player {
 		}
 		this.lastControllerPos = controllerAngle.clone();
 
+		if (this.hasTurbo()) {
+			this.smokeEmitter.forEachAlive(p => {
+				//p.tint = 0xff0000 | (0xff * p.lifeT) | ((0xff * p.lifeT) << 8);
+				//p.tint = (0xffffff * (p.lifeT)) + (0xff0000 * (1 - p.lifeT));
+			}, this)
+		}
+
 		//Charging
 		if (p.R1) {
 			if (!this.preparingToCharge) {
@@ -180,7 +192,7 @@ export class Player {
 		}
 		if (!this.preparingToCharge) {
 			let force = controllerAngle.clone().scale(0.012);
-			if (time < this.turboTime + timeTurboLastsFor) {
+			if (this.hasTurbo()) {
 				force.scale(3);
 			}
 			this.image.applyForce(force);

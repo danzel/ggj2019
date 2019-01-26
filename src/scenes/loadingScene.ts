@@ -24,6 +24,18 @@ export class LoadingScene extends Phaser.Scene {
 			frameWidth: 256,
 			frameHeight: 256
 		});
+		this.load.spritesheet('home_2', require('../assets/player/home_2.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
+		this.load.spritesheet('home_3', require('../assets/player/home_3.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
+		this.load.spritesheet('home_4', require('../assets/player/home_4.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
 
 		this.load.spritesheet('tracks', require('../assets/player/tracks.png'), {
 			frameWidth: 256,
