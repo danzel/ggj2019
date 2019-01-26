@@ -8,7 +8,8 @@ const radius = 30;
 
 export enum Powerup {
 	Turbo = 0,
-	Repluser = 1,
+	Repulser = 1,
+	IncreaseSpeed = 2,
 }
 
 export class PowerupBox {
@@ -17,7 +18,7 @@ export class PowerupBox {
 	image: Phaser.Physics.Matter.Image;
 	body: Matter.Body;
 
-	powerup = <Powerup>Math.floor(Math.random() * 2);
+	powerup = <Powerup>Math.floor(Math.random() * 3);
 
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
 	}

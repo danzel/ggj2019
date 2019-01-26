@@ -47,6 +47,8 @@ export class Player {
 	lastDirectionalPos: Phaser.Math.Vector2;
 	tracks: Phaser.GameObjects.Image;
 
+	speed = 1;
+
 	turboTime = -99999;
 	repulserTime = -99999;
 
@@ -120,8 +122,11 @@ export class Player {
 			case Powerup.Turbo:
 				this.turboTime = this.scene.time.now;
 				break;
-			case Powerup.Repluser:
+			case Powerup.Repulser:
 				this.repulserTime = this.scene.time.now;
+				break;
+			case Powerup.IncreaseSpeed:
+				this.speed += 0.2;
 				break;
 			default:
 				throw new Error("Implement powerup");
@@ -217,7 +222,7 @@ export class Player {
 			this.chargeStartTime = 0;
 		}
 		if (!this.preparingToCharge) {
-			let force = controllerAngle.clone().scale(0.012);
+			let force = controllerAngle.clone().scale(0.012).scale(this.speed);
 			if (this.hasTurbo()) {
 				force.scale(3);
 			}
@@ -260,10 +265,12 @@ export class Player {
 
 
 		//shake house
-		const scale = this.hasTurbo() ? 0.06 : 0.02;
+		let scale = this.hasTurbo() ? 0.06 : 0.02;
+		scale *= this.speed;
 		this.image.setOrigin(0.5 + (scale / 2) - Math.random() * scale, 0.5 + (scale / 2) - Math.random() * scale);
 
-		const trackScale = this.hasTurbo() ? 0.03 : 0.01;
+		let trackScale = this.hasTurbo() ? 0.03 : 0.01;
+		trackScale *= this.speed
 		this.tracks.setOrigin(0.5 + (trackScale / 2) - Math.random() * trackScale, 0.5 + (trackScale / 2) - Math.random() * trackScale);
 
 	}
