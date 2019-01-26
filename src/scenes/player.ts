@@ -118,19 +118,48 @@ export class Player {
 	}
 
 	grantPowerup(powerup: Powerup) {
+
+		let text = '';
 		switch (powerup) {
 			case Powerup.Turbo:
 				this.turboTime = this.scene.time.now;
+				text = 'Turbo';
 				break;
 			case Powerup.Repulser:
 				this.repulserTime = this.scene.time.now;
+				text = "Repulser";
 				break;
 			case Powerup.IncreaseSpeed:
 				this.speed += 0.2;
+				text = "Speed Up";
 				break;
 			default:
 				throw new Error("Implement powerup");
 		}
+
+
+		let s = this.scene.add.text(this.image.x, this.image.y, text, {
+			fontFamily: 'Staatliches',
+			fontSize: '40px',
+			color: '#ffffff',
+			stroke: '#000000',
+			strokeThickness: 2
+		});
+		s.setOrigin(0.5, 3);
+		s.setDepth(Depths.mostOverlay);
+
+		this.scene.add.tween({
+			targets: s,
+			alpha: 1,
+			duration: 1000,
+			onComplete: () => {
+				this.scene.add.tween({
+					targets: s,
+					alpha: 0,
+					duration: 1000
+				});
+			}
+		})
 	}
 
 	hasRepulser() {
@@ -172,7 +201,7 @@ export class Player {
 			let a = Phaser.Math.Rotate(new Phaser.Geom.Point(back.x, back.y), 15);
 			this.scene.playerDirtEmitter.emitParticleAt(this.image.x + a.x, this.image.y + a.y, 1);
 
-			
+
 			a = Phaser.Math.Rotate(new Phaser.Geom.Point(back.x, back.y), -15);
 			this.scene.playerDirtEmitter.emitParticleAt(this.image.x + a.x, this.image.y + a.y, 1);
 		}
