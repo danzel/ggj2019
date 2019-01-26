@@ -57,6 +57,8 @@ export class GameScene extends Phaser.Scene {
 	boxDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	hookDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	winningPlayerImage: Phaser.GameObjects.Image;
+	overParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	hookHitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
 	constructor() {
 		super({ key: 'game' });
@@ -89,6 +91,9 @@ export class GameScene extends Phaser.Scene {
 
 		this.houseSmokeParticles = this.add.particles('small_smoke');
 		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
+		
+		this.overParticles = this.add.particles('shapes');
+		this.overParticles.setDepth(Depths.smokeOverlay);
 
 		this.playerDirtEmitter = this.dirtParticles.createEmitter(<any>{
 			alpha: { start: 1, end: 0, ease: Phaser.Math.Easing.Cubic.In },
@@ -141,6 +146,27 @@ export class GameScene extends Phaser.Scene {
 			blendMode: Phaser.BlendModes.DARKEN
 		});
 		this.hookDirtEmitter.frequency = -1;
+
+
+
+		
+		this.hookHitEmitter = this.overParticles.createEmitter(<any>{
+			alpha: { start: 0.5, end: 0, ease: Phaser.Math.Easing.Cubic.In },
+			lifespan: { min: 100, max: 3000 },
+			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 50) },
+			speed: { min: 0, max: 40 },
+			//angle: { min: 270 - 10, max: 270 + 10 },
+			scale: { min: 3, max: 5 },
+			frame: {
+				frames: ['scorch_01', 'scorch_02', 'scorch_03']
+			},
+
+			//tint: 0xc7b896,
+
+			blendMode: Phaser.BlendModes.HARD_LIGHT
+		});
+		this.hookHitEmitter.frequency = -1;
+
 
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);

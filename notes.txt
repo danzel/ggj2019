@@ -29,3 +29,5 @@ and here: https://github.com/samme/phaser3-faq/wiki#how-do-i-scaleresize-the-gam
 
 Tween has no type (scene.add.tween)
 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/tween/
+
+particle emitter frame/frames definition doesn't match the json, pretty sure it is wrong

@@ -111,6 +111,9 @@ export class Hook {
 				force: new Phaser.Math.Vector2(0, -1).scale(velocity / 30),
 				player
 			});
+
+			
+			this.scene.hookHitEmitter.emitParticleAt((this.image.x + player.image.x) / 2, (this.image.y + player.image.y) / 2, 10);
 		}
 
 
