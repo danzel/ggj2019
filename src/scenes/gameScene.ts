@@ -155,11 +155,11 @@ export class GameScene extends Phaser.Scene {
 
 		this.hookHitEmitter = this.overParticles.createEmitter(<any>{
 			alpha: { start: 0.5, end: 0, ease: Phaser.Math.Easing.Cubic.In },
-			lifespan: { min: 100, max: 3000 },
+			lifespan: { min: 100, max: 1000 },
 			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 50) },
 			speed: { min: 0, max: 40 },
 			//angle: { min: 270 - 10, max: 270 + 10 },
-			scale: { min: 3, max: 5 },
+			scale: { start: 4, end: 6 },//{ min: 3, max: 5 },
 			frame: {
 				frames: ['scorch_01', 'scorch_02', 'scorch_03']
 			},

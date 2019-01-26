@@ -22,7 +22,7 @@ export class Boss {
 
 
 		this.dirtEmitter = this.scene.overParticles.createEmitter(<any>{
-			alpha: { start: 1, end: 0, ease: Phaser.Math.Easing.Cubic.In },
+			alpha: { start: 0.7, end: 0.3 },
 			lifespan: { min: 100, max: 3000 },
 			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 10) },
 			//speed: { min: 0, max: 200 },
