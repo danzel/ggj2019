@@ -2,6 +2,7 @@ import { Player } from "./player";
 import { Hook } from "./hook";
 import { HookManager } from "./hookManager";
 import { MissileManager, Missile } from "./missileManager";
+import { Depths } from "./depths";
 
 const wallVisibleWidth = 50;
 
@@ -18,11 +19,7 @@ export class GameScene extends Phaser.Scene {
 
 	intensity = 1;
 
-	shadowGroup: Phaser.GameObjects.Group;
-	telegraphGroup: Phaser.GameObjects.Group;
-	normalGroup: Phaser.GameObjects.Group;
 	hookManager: HookManager;
-	overlayGroup: Phaser.GameObjects.Group;
 	missileManager: MissileManager;
 
 	forcesToApply = new Array<{
@@ -30,6 +27,9 @@ export class GameScene extends Phaser.Scene {
 		force: Phaser.Math.Vector2
 	}>();
 	backgrounds: Phaser.GameObjects.TileSprite[];
+	smokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+	houseSmokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 
 	constructor() {
 		super({ key: 'game' });
@@ -41,17 +41,12 @@ export class GameScene extends Phaser.Scene {
 
 		//this.cameras.main.shake(1000);
 		//new Phaser.Cameras.Scene2D.Effects.Shake(this.cameras.main).start(1000);
-		
-		this.backgrounds = [
-			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5).setPosition(0, 1024),
-			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5),
-			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5).setPosition(0, -1024),
-		]
 
-		this.shadowGroup = this.add.group();
-		this.normalGroup = this.add.group();
-		this.telegraphGroup = this.add.group();
-		this.overlayGroup = this.add.group();
+		this.backgrounds = [
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0, 0).setTileScale(0.5, 0.5).setPosition(0, 1024).setDepth(Depths.background),
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0, 0).setTileScale(0.5, 0.5).setDepth(Depths.background),
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0, 0).setTileScale(0.5, 0.5).setPosition(0, -1024).setDepth(Depths.background),
+		]
 
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);
@@ -65,6 +60,9 @@ export class GameScene extends Phaser.Scene {
 			w.isStatic = true;
 		});
 
+		this.houseSmokeParticles = this.add.particles('small_smoke');
+		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
+
 		this.players = [
 			new Player(this, 0),
 			new Player(this, 1),
@@ -77,6 +75,17 @@ export class GameScene extends Phaser.Scene {
 
 		//debug hack thing
 		this.matter.add.mouseSpring({});
+
+
+		/*this.smokeParticles = this.add.particles('smoke');
+		this.smokeEmitter = this.smokeParticles.createEmitter({
+			scale: { start: 1, end: 2 },
+			alpha: { start: 1, end: 0 }
+		});
+		this.smokeEmitter.setScale(3);
+		//this.smokeEmitter.setBlendMode(Phaser.BlendModes.);
+		this.smokeEmitter.setFrequency(100);
+		this.smokeEmitter.tint.defaultValue = 0xff0000;*/
 	}
 
 
@@ -101,7 +110,22 @@ export class GameScene extends Phaser.Scene {
 			p.update(time, delta);
 		});
 
-		
+		/*while (true) {
+			var x = Math.random() * 1920;
+			var y = Math.random() * 1080 + this.cameras.main.scrollY;
+
+			var diff = new Phaser.Math.Vector2(x - this.players[0].image.x, y - this.players[0].image.y);
+
+			if (diff.length() > 500) {
+				//console.log(x, y);
+				this.smokeEmitter.setPosition(x, y);
+				//this.smokeEmitter
+				//this.smokeParticles.emitParticleAt(x, y);
+				break;
+			}
+		}*/
+
+
 
 		this.forcesToApply.forEach(f => {
 			f.player.image.applyForce(f.force);

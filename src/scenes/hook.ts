@@ -1,5 +1,6 @@
 import { GameScene } from "./gameScene";
 import { Player, playerRadius } from "./player";
+import { Depths } from "./depths";
 
 const telegraphTime = 1300;
 
@@ -19,7 +20,7 @@ export class Hook {
 	showTelegraph() {
 		this.telegraph = this.scene.add.image((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 'hook-telegraph');
 		//TODO this.telegraph.blendMode = Phaser.BlendModes.COLOR_BURN;
-		this.scene.telegraphGroup.add(this.telegraph);
+		this.telegraph.setDepth(Depths.telegraph);
 		this.telegraph.alpha = 0.2;
 
 		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) - 90;
@@ -35,7 +36,7 @@ export class Hook {
 
 			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'hook');
 			this.image.setCircle(radius, {});
-			this.scene.normalGroup.add(this.image);
+			this.image.setDepth(Depths.normal);
 
 			this.body = <Matter.Body>this.image.body;
 			(<any>this.body).hook = this;
@@ -96,6 +97,7 @@ export class Hook {
 			let center = start.clone().add(halfLengthVector);
 
 			let rope = this.scene.matter.add.image(center.x, center.y, 'rope');
+			rope.setDepth(Depths.normal);
 
 			rope.setRectangle(ropeWidth, pieceLengthWithOverlap, {
 				chamfer: 5,

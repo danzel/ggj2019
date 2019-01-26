@@ -1,5 +1,6 @@
 import { GameScene } from "./gameScene";
 import { Player } from "./player";
+import { Depths } from "./depths";
 
 export class Missile {
 	constructor(public player: Player, public image: Phaser.Physics.Matter.Image, public body: Matter.Body, public angle: Phaser.Math.Vector2, public spawnTime: number) {
@@ -16,7 +17,7 @@ export class MissileManager {
 
 	fireMissile(player: Player, angle: Phaser.Math.Vector2) {
 		let image = this.scene.matter.add.image(player.image.x, player.image.y, 'missile');
-		this.scene.normalGroup.add(image);
+		image.setDepth(Depths.normal);
 		image.setCircle(10, {});
 		var body = <Matter.Body>image.body;
 		const missile = new Missile(player, image, body, angle.clone().normalize(), this.scene.time.now);

@@ -1,6 +1,7 @@
 import { GameScene } from "./gameScene";
 import { Hook } from "./hook";
 import { HealthBar } from "./healthBar";
+import { Depths } from "./depths";
 
 export const chargePrepareTime = 500;
 export const chargeCooldown = 500;
@@ -25,7 +26,6 @@ export class Player {
 	preparingToCharge = false;
 	haveCharged = false;
 	chargeStartTime = 0;
-	gfx: Phaser.GameObjects.Graphics;
 
 	shakeToBreakAmount = 0;
 
@@ -40,22 +40,13 @@ export class Player {
 	missilePress = new JustDown();
 
 	missileCount = 10;
+	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	
 	constructor(private scene: GameScene, public padIndex: number) {
-		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'player');
-		this.image.setScale(0.25);
+		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'home_1');
 		this.image.setCircle(playerRadius, {});
-		scene.normalGroup.add(this.image);
+		this.image.setDepth(Depths.normal);
 
-		this.gfx = scene.add.graphics({ x: 100, y: 100 });
-		this.gfx.lineStyle(5, 0xff0000, 1.0);
-		this.gfx.fillStyle(0x00ff00, 1.0);
-		this.gfx.beginPath();
-		this.gfx.lineTo(0, 0);
-		this.gfx.lineTo(0, 60);
-		this.gfx.closePath();
-		this.gfx.strokePath();
-		
 		this.body = <Matter.Body>this.image.body;
 		(<any>this.body).player = this;
 
@@ -72,11 +63,24 @@ export class Player {
 			//align:'center'
 		});
 		this.shakeToBreak.setOrigin(0.5, 2);
-		this.scene.overlayGroup.add(this.shakeToBreak);
+		this.shakeToBreak.setDepth(Depths.overlay);
 		this.shakeToBreak.setVisible(false);
 
 
 		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000);
+
+		this.smokeEmitter = scene.houseSmokeParticles.createEmitter({
+			scale: { start: 1, end: 3 },
+			alpha: { start: 1, end: 0 },
+			speedX: { min: -10, max: 10 },
+			angle: { min: 0, max: 360 },
+			lifespan: 5000
+			//y: 1000
+		});
+		this.smokeEmitter.setSpeedY(-60);
+		//this.smokeEmitter.setSpeedX([-10, 10]);
+		this.smokeEmitter.setFrequency(100);
+		this.smokeEmitter.setAngle([0, 360]);
 	}
 
 	vibrate() {
@@ -85,7 +89,6 @@ export class Player {
 	}
 
 	update(time: number, delta: number) {
-		this.gfx.setPosition(this.image.x, this.image.y);
 		let p = this.scene.input.gamepad.getPad(this.padIndex);
 		if (!p) {
 			return;
@@ -99,11 +102,11 @@ export class Player {
 			isDirectional = false;
 		}
 
-		if (isDirectional) {
-			this.gfx.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) - 90);
-		}
-
 		this.image.setAngle(0);
+
+		if (isDirectional) {
+			this.image.setFrame((Math.floor(Phaser.Math.RadToDeg(controllerAngle.angle()) / 360 * 4 * 8) + 8 + 16) % (4 * 8));
+		}
 
 		if (this.attachedHooks.length > 0) {
 			this.shakeToBreakAmount += this.lastControllerPos.clone().subtract(controllerAngle).length();
@@ -126,6 +129,8 @@ export class Player {
 				this.chargeAngle = controllerAngle.clone();
 
 				this.chargeTelegraph = this.scene.add.image(this.image.x, this.image.y, 'player-charge-telegraph');
+				this.chargeTelegraph.setDepth(Depths.telegraph);
+
 				this.chargeTelegraph.alpha = 0.5;
 				this.chargeTelegraph.setOrigin(0.5, 1.5);
 			}
@@ -161,6 +166,8 @@ export class Player {
 				this.chargeTelegraph.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) + 90);
 			}
 		}
+
+		this.smokeEmitter.setPosition(this.image.x, this.image.y - 90);
 
 		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
 		this.shakeToBreak.setPosition(this.image.x, this.image.y);

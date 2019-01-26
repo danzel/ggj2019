@@ -1,4 +1,5 @@
 import { GameScene } from "./gameScene";
+import { Depths } from "./depths";
 
 export class HealthBar {
 	bgGfx: Phaser.GameObjects.Graphics;
@@ -11,7 +12,8 @@ export class HealthBar {
 			}
 		});
 		this.bgGfx.fillRect(-20, -6, 40, 12);
-		scene.overlayGroup.add(this.bgGfx);
+		this.bgGfx.setDepth(Depths.overlay);
+
 
 		this.gfx = scene.add.graphics({
 			fillStyle: {
@@ -19,7 +21,7 @@ export class HealthBar {
 			}
 		});
 		this.gfx.fillRect(-19, -5, 38, 10);
-		scene.overlayGroup.add(this.gfx);
+		this.gfx.setDepth(Depths.overlay);
 	}
 
 	setVisible(visible: boolean) {

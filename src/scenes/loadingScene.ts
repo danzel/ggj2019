@@ -16,6 +16,14 @@ export class LoadingScene extends Phaser.Scene {
 		this.load.image('player', require('../assets/player/test.png'))
 		this.load.image('background', require('../assets/dirt_background.jpg'))
 
+		this.load.image('smoke', require('../assets/smoke.png'))
+		this.load.image('small_smoke', require('../assets/small_smoke.png'))
+
+		this.load.spritesheet('home_1', require('../assets/player/home_1.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
+
 		WebFont.load({
 			custom: {
 				families: ['ZCOOL KuaiLe']
