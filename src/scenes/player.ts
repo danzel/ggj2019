@@ -8,6 +8,16 @@ export const playerRadius = 50;
 
 export const requiredShakeToBreak = 50;
 
+class JustDown {
+	held = false;
+
+	isJustDown(value: boolean) {
+		var res = value && !this.held;
+		this.held = value;
+		return res;
+	}
+}
+
 export class Player {
 	image: Phaser.Physics.Matter.Image;
 	body: Matter.Body;
@@ -27,7 +37,9 @@ export class Player {
 	lastControllerPos: Phaser.Math.Vector2;
 	shakeBar: HealthBar;
 
-	missileCount = 0;
+	missilePress = new JustDown();
+
+	missileCount = 1000;
 	
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
@@ -104,7 +116,6 @@ export class Player {
 		}
 		this.lastControllerPos = controllerAngle.clone();
 
-
 		//Charging
 		if (p.R1) {
 			if (!this.preparingToCharge) {
@@ -131,6 +142,11 @@ export class Player {
 			this.image.applyForce(controllerAngle.clone().scale(0.02));
 		}
 
+		if (this.missilePress.isJustDown(p.A) && this.missileCount > 0 && isDirectional) {
+			this.missileCount--;
+
+			this.scene.missileManager.fireMissile(this, controllerAngle);
+		}
 
 		//Graphics updates
 		if (this.chargeTelegraph) {

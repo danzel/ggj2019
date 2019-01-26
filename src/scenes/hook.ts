@@ -41,9 +41,9 @@ export class Hook {
 			(<any>this.body).hook = this;
 
 			this.body.isSensor = true;
-			this.body.frictionAir = 0.05;
+			this.body.frictionAir = 0.08;
 
-			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0015));
+			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0025));
 
 			this.scene.add.tween({
 				targets: this.telegraph,
@@ -58,6 +58,12 @@ export class Hook {
 	connectToPlayer(player: Player) {
 		player.attachedHooks.push(this);
 		player.vibrate();
+
+		const velocity = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
+		this.scene.forcesToApply.push({
+			force: new Phaser.Math.Vector2(0, -1).scale(velocity / 30),
+			player
+		});
 
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 

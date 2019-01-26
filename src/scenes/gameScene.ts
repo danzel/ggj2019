@@ -1,11 +1,13 @@
 import { Player } from "./player";
 import { Hook } from "./hook";
 import { HookManager } from "./hookManager";
+import { MissileManager, Missile } from "./missileManager";
 
 const wallVisibleWidth = 50;
 
 interface CollisionBody {
 	hook?: Hook;
+	missile?: Missile;
 	player?: Player;
 }
 
@@ -21,6 +23,12 @@ export class GameScene extends Phaser.Scene {
 	normalGroup: Phaser.GameObjects.Group;
 	hookManager: HookManager;
 	overlayGroup: Phaser.GameObjects.Group;
+	missileManager: MissileManager;
+
+	forcesToApply = new Array<{
+		player: Player,
+		force: Phaser.Math.Vector2
+	}>();
 
 	constructor() {
 		super({ key: 'game' });
@@ -39,6 +47,7 @@ export class GameScene extends Phaser.Scene {
 		this.overlayGroup = this.add.group();
 
 		this.hookManager = new HookManager(this);
+		this.missileManager = new MissileManager(this);
 
 		this.sideWalls = [
 			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
@@ -72,10 +81,18 @@ export class GameScene extends Phaser.Scene {
 		this.moveScene(time, delta);
 
 		this.hookManager.update(time, delta);
+		this.missileManager.update(time, delta);
 
 		this.players.forEach(p => {
 			p.update(time, delta);
 		});
+
+		
+
+		this.forcesToApply.forEach(f => {
+			f.player.image.applyForce(f.force);
+		});
+		this.forcesToApply.length = 0;
 
 	}
 
@@ -111,8 +128,15 @@ export class GameScene extends Phaser.Scene {
 			if (bodyA.hook && bodyB.player) {
 				bodyA.hook.connectToPlayer(bodyB.player);
 			}
-			if (bodyA.player && bodyB.hook) {
+			else if (bodyA.player && bodyB.hook) {
 				bodyB.hook.connectToPlayer(bodyA.player);
+			}
+
+			else if (bodyA.player && bodyB.missile) {
+				this.missileManager.handleCollision(bodyA.player, bodyB.missile);
+			}
+			else if (bodyA.missile && bodyB.player) {
+				this.missileManager.handleCollision(bodyB.player, bodyA.missile);
 			}
 		});
 	}
