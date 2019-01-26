@@ -7,7 +7,7 @@ const telegraphTime = 1300;
 const radius = 30;
 
 export class Hook {
-	telegraph: Phaser.GameObjects.Image;
+	telegraph: Phaser.GameObjects.TileSprite;
 	startedTelegraph?: number;
 	image: Phaser.Physics.Matter.Image;
 	body: import("c:/Users/danzel/Desktop/Code/ggj2019/matter").Body;
@@ -23,12 +23,19 @@ export class Hook {
 	}
 
 	showTelegraph() {
-		this.telegraph = this.scene.add.image((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 'hook-telegraph');
+		this.telegraph = this.scene.add.tileSprite((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 80, 1900, 'hook-telegraph');
 		//TODO this.telegraph.blendMode = Phaser.BlendModes.COLOR_BURN;
 		this.telegraph.setDepth(Depths.telegraph);
-		this.telegraph.alpha = 0.2;
+		this.telegraph.alpha = 0.5;
 
-		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) - 90;
+		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) + 90;
+
+		this.telegraph.alpha = 0;
+		this.scene.add.tween({
+			targets: this.telegraph,
+			alpha: 0.5,
+			duration: 300
+		});
 
 
 		this.startedTelegraph = this.scene.time.now;
@@ -36,11 +43,15 @@ export class Hook {
 
 
 	update(time: number, delta: number) {
+		if (this.telegraph) {
+			this.telegraph.setTilePosition(0, time / 10);
+		}
+
 		if (this.startedTelegraph && this.scene.time.now > this.startedTelegraph + telegraphTime) {
 			this.startedTelegraph = undefined;
 
 			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'harpoon');
-			let frame = (Math.round((this.telegraph.angle + 270) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
+			let frame = (Math.round((this.telegraph.angle + 90) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
 			this.image.setFrame(frame);
 
 

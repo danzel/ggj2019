@@ -4,7 +4,7 @@ export const Depths = {
 
 	tracks: 2.5,
 	normal: 3,
-	telegraph: 7,
+	telegraph: 2,
 
 	overlay: 9,
 	smokeOverlay: 10,

@@ -12,7 +12,7 @@ export enum Powerup {
 }
 
 export class PowerupBox {
-	telegraph: Phaser.GameObjects.Image;
+	telegraph: Phaser.GameObjects.TileSprite;
 	startedTelegraph: number;
 	image: Phaser.Physics.Matter.Image;
 	body: Matter.Body;
@@ -23,12 +23,15 @@ export class PowerupBox {
 	}
 
 	showTelegraph() {
-		this.telegraph = this.scene.add.image((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 'powerup-telegraph');
-		//TODO this.telegraph.blendMode = Phaser.BlendModes.COLOR_BURN;
+		this.telegraph = this.scene.add.tileSprite((this.source.x + this.destination.x) / 2, (this.source.y + this.destination.y) / 2, 80, 1900, 'powerup-telegraph');
 		this.telegraph.setDepth(Depths.telegraph);
-		this.telegraph.alpha = 0.3;
-
-		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) - 90;
+		this.telegraph.angle = Phaser.Math.RadToDeg(Phaser.Math.Angle.BetweenPoints(this.source, this.destination)) + 90;
+		this.telegraph.alpha = 0;
+		this.scene.add.tween({
+			targets: this.telegraph,
+			alpha: 0.5,
+			duration: 300
+		});
 
 
 		this.startedTelegraph = this.scene.time.now;
