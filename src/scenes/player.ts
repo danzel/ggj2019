@@ -229,8 +229,12 @@ export class Player {
 		this.tracks.setPosition(this.image.x, this.image.y + 20);
 
 
-		//this.image.setOrigin(0.5, 0.5);// + 0.1 - Math.random() * 0.05, 0.5 + 0.1 - Math.random() * 0.05);
+		//shake house
 		const scale = this.hasTurbo() ? 0.05 : 0.02;
 		this.image.setOrigin(0.5 + (scale / 2) - Math.random() * scale, 0.5 + (scale / 2) - Math.random() * scale);
+
+		const trackScale = this.hasTurbo() ? 0.03 : 0.01;
+		this.tracks.setOrigin(0.5 + (trackScale / 2) - Math.random() * trackScale, 0.5 + (trackScale / 2) - Math.random() * trackScale);
+
 	}
 }

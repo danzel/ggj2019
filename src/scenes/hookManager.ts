@@ -16,6 +16,7 @@ export class HookManager {
 
 		//if (this.hooks.length < 5) { 
 		if (this.hooks.length == 0 || time > this.lastHook + timeBetweenHooks / this.scene.intensity) {
+			
 			this.lastHook = time;
 
 			let sourceX = 200 + (Math.random() * (1920 - 400));

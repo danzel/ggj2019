@@ -15,11 +15,12 @@ interface CollisionBody {
 }
 
 export class GameScene extends Phaser.Scene {
-	sideWalls: Matter.Body[];
+	sideWalls: Phaser.Physics.Matter.Sprite[];
+	topWall: Phaser.Physics.Matter.Sprite;
 	players: Player[];
 
 
-	intensity = 1;
+	intensity = 0.1;
 
 	hookManager: HookManager;
 	missileManager: MissileManager;
@@ -56,13 +57,19 @@ export class GameScene extends Phaser.Scene {
 		this.powerUpManager = new PowerupManager(this);
 
 		this.sideWalls = [
-			<any>this.matter.add.rectangle(0, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {}),
-			<any>this.matter.add.rectangle(1920, 1080 / 2, wallVisibleWidth * 2, 1080 * 3, {})
+			<any>this.matter.add.sprite(0, 1080 / 2, '').setRectangle(wallVisibleWidth * 2, 1080 * 3, {}),
+			<any>this.matter.add.sprite(1920, 1080 / 2, '').setRectangle(wallVisibleWidth * 2, 1080 * 3, {})
 		];
 		this.sideWalls.forEach(w => {
-			w.friction = 0;
-			w.isStatic = true;
+			(<any>w.body).friction = 0;
+			(<any>w.body).isStatic = true;
 		});
+
+		this.topWall = this.matter.add.sprite(1920 / 2, -20, '');
+		this.topWall.setRectangle(1920, 40, {});
+		let bWall = <Matter.Body>this.topWall.body;
+		bWall.isStatic = true;
+		bWall.friction = 0;
 
 		this.houseSmokeParticles = this.add.particles('small_smoke');
 		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
@@ -97,12 +104,19 @@ export class GameScene extends Phaser.Scene {
 		if (this.input.gamepad.total == 0) {
 			return;
 		}
+		if (time < 20000){
+			this.intensity = 0.5 + time / 40000;
+		} else if (time < 40000) {
+			this.intensity = 1 + (time - 20000) / 40000;
+		} else {
+			this.intensity = 1.5 + (time - 40000) / 60000;
+		}
 
 		this.backgrounds.forEach(b => {
 			if (b.y - this.cameras.main.scrollY > 1080) {
 				b.setPosition(0, b.y - (1024 * this.backgrounds.length));
 			}
-		})
+		});
 
 
 		this.moveScene(time, delta);
@@ -175,7 +189,7 @@ export class GameScene extends Phaser.Scene {
 	lastWallUpdate = 0;
 
 	moveScene(time: number, delta: number) {
-		const amount = (delta / 1000) * 100;
+		const amount = this.intensity * (delta / 1000) * 100;
 
 		this.cameras.main.scrollY -= amount;
 
@@ -184,14 +198,12 @@ export class GameScene extends Phaser.Scene {
 		this.lastWallUpdate += delta;
 		if (this.lastWallUpdate > 1000) {
 
-			this.sideWalls.forEach(w => this.matter.world.remove(w, false));
-			this.sideWalls = [
-				<any>this.matter.add.rectangle(0, 1080 / 2 + this.cameras.main.scrollY, wallVisibleWidth * 2, 1080 * 3, {}),
-				<any>this.matter.add.rectangle(1920, 1080 / 2 + this.cameras.main.scrollY, wallVisibleWidth * 2, 1080 * 3, {})
-			];
+			this.sideWalls.forEach(w => w.setPosition(w.x, this.cameras.main.scrollY));
 
 			this.lastWallUpdate = time;
 		}
+
+		this.topWall.setPosition(1920 / 2, this.cameras.main.scrollY - 20);
 
 	}
 
