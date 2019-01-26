@@ -20,7 +20,7 @@ class Game extends Phaser.Game {
 			physics: {
 				default: 'matter',
 				matter: {
-					debug: true,
+					debug: false,
 					gravity: {
 						x: 0,
 						y: 0

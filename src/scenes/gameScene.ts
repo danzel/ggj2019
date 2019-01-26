@@ -213,7 +213,6 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		console.log(this.gameIsOver);
 		if (!this.gameIsOver) {
 			let deadSum = this.players.map(p => p.isDead ? 1 : 0).reduce((a, b) => a + b, 0);
 

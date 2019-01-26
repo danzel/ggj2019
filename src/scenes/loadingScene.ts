@@ -45,12 +45,13 @@ export class LoadingScene extends Phaser.Scene {
 			frameWidth: 128,
 			frameHeight: 128
 		});
-
-		
 		this.load.spritesheet('harpoon', require('../assets/harpoon.png'), {
 			frameWidth: 256,
 			frameHeight: 256
 		});
+
+		this.load.image('chain', require('../assets/chain.png'));
+		this.load.image('chain_tile', require('../assets/chain_tile.png'));
 
 		WebFont.load({
 			custom: {

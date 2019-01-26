@@ -16,6 +16,9 @@ export class Hook {
 	lastRope: Phaser.Physics.Matter.Image;
 	ropePieces = new Array<Phaser.Physics.Matter.Image>();
 
+	thi
+	chainTile: Phaser.GameObjects.TileSprite;
+
 	constructor(private scene: GameScene, private source: Phaser.Math.Vector2, private destination: Phaser.Math.Vector2) {
 	}
 
@@ -59,6 +62,20 @@ export class Hook {
 
 				onComplete: () => this.telegraph.destroy()
 			})
+			this.source.y += 1000;
+
+			this.chainTile = this.scene.add.tileSprite(0, 0, 10, 1000, 'chain_tile');
+			this.chainTile.setDepth(Depths.normal);
+		}
+
+		if (this.chainTile && this.image) {
+			this.chainTile.setPosition((this.image.x + this.source.x) / 2, (this.image.y + this.source.y) / 2);
+
+			let diff = this.source.clone().subtract(new Phaser.Math.Vector2(this.image.x, this.image.y));
+
+			this.chainTile.setSize(10, diff.length());
+
+			this.chainTile.setAngle(Phaser.Math.RadToDeg(diff.angle()) - 90);
 		}
 
 	}
@@ -66,6 +83,9 @@ export class Hook {
 	connectToPlayer(player: Player) {
 		player.attachedHooks.push(this);
 		player.vibrate();
+
+		this.chainTile.destroy();
+		this.chainTile = undefined;
 
 		const velocity = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
 		if (!player.isDead) {
@@ -75,12 +95,11 @@ export class Hook {
 			});
 		}
 
-		this.source.y += 1000;
 
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 
-		const defaultPieceLength = 50;
-		const ropeWidth = 4;
+		const defaultPieceLength = 20;
+		const ropeWidth = 8;
 		const pieceCount = Math.floor(distance / defaultPieceLength);// * 1.4;
 		const pieceLength = distance / pieceCount;
 
@@ -108,7 +127,7 @@ export class Hook {
 		for (var i = 0; i < pieceCount; i++) {
 			let center = start.clone().add(halfLengthVector);
 
-			let rope = this.scene.matter.add.image(center.x, center.y, 'rope');
+			let rope = this.scene.matter.add.image(center.x, center.y, 'chain');
 			rope.setDepth(Depths.normal);
 
 			rope.setRectangle(ropeWidth, pieceLengthWithOverlap, {

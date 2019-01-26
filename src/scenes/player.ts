@@ -67,7 +67,7 @@ export class Player {
 		this.body.friction = 1;
 		this.body.restitution = 1;
 
-		this.shakeToBreak = this.scene.add.text(100, 100, "SHAKE TO BREAK", {
+		this.shakeToBreak = this.scene.add.text(100, 100, "SPIN TO BREAK", {
 			fontFamily: 'Staatliches',
 			fontSize: '40px',
 			color: '#ffffff',
