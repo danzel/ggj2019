@@ -106,7 +106,7 @@ export class Player {
 		this.image.setAngle(0);
 
 		if (this.attachedHooks.length > 0) {
-			this.shakeToBreakAmount += Math.abs(this.lastControllerPos.x - controllerAngle.x);
+			this.shakeToBreakAmount += this.lastControllerPos.clone().subtract(controllerAngle).length();
 			
 			if (this.shakeToBreakAmount > requiredShakeToBreak) {
 				this.shakeToBreakAmount = 0;
@@ -141,7 +141,11 @@ export class Player {
 			this.chargeStartTime = 0;
 		}
 		if (!this.preparingToCharge) {
-			this.image.applyForce(controllerAngle.clone().scale(0.02));
+			let foce = controllerAngle.clone().scale(0.012);
+			if (p.B) {
+				foce.scale(3);
+			}
+			this.image.applyForce(foce);
 		}
 
 		if (this.missilePress.isJustDown(p.A) && this.missileCount > 0 && isDirectional) {

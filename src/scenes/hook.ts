@@ -1,7 +1,7 @@
 import { GameScene } from "./gameScene";
 import { Player, playerRadius } from "./player";
 
-const telegraphTime = 1000;
+const telegraphTime = 1300;
 
 const radius = 50;
 
