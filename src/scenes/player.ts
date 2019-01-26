@@ -66,19 +66,19 @@ export class Player {
 		this.body.restitution = 1;
 
 		this.shakeToBreak = this.scene.add.text(100, 100, "SHAKE TO BREAK", {
-			fontFamily: 'ZCOOL KuaiLe',
+			fontFamily: 'Staatliches',
 			fontSize: '40px',
 			color: '#ffffff',
 			stroke: '#000000',
 			strokeThickness: 2,
 			//align:'center'
 		});
-		this.shakeToBreak.setOrigin(0.5, 2);
-		this.shakeToBreak.setDepth(Depths.overlay);
+		this.shakeToBreak.setOrigin(0.5, 3);
+		this.shakeToBreak.setDepth(Depths.mostOverlay);
 		this.shakeToBreak.setVisible(false);
 
 
-		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000);
+		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000, 100);
 
 		this.smokeEmitter = scene.houseSmokeParticles.createEmitter({
 			scale: { start: 1, end: 3 },
@@ -221,11 +221,16 @@ export class Player {
 		}
 
 		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
-		this.shakeToBreak.setPosition(this.image.x, this.image.y);
+		this.shakeToBreak.setPosition(this.image.x + (6 * Math.random() - 3), this.image.y + (6 * Math.random() - 3));
 
 		this.shakeBar.setVisible(this.attachedHooks.length > 0);
-		this.shakeBar.update(this.image.x, this.image.y - 40, this.shakeToBreakAmount / requiredShakeToBreak);
+		this.shakeBar.update(this.image.x, this.image.y - 70, this.shakeToBreakAmount / requiredShakeToBreak);
 
 		this.tracks.setPosition(this.image.x, this.image.y + 20);
+
+
+		//this.image.setOrigin(0.5, 0.5);// + 0.1 - Math.random() * 0.05, 0.5 + 0.1 - Math.random() * 0.05);
+		const scale = this.hasTurbo() ? 0.05 : 0.02;
+		this.image.setOrigin(0.5 + (scale / 2) - Math.random() * scale, 0.5 + (scale / 2) - Math.random() * scale);
 	}
 }

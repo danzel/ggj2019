@@ -48,7 +48,7 @@ export class LoadingScene extends Phaser.Scene {
 
 		WebFont.load({
 			custom: {
-				families: ['ZCOOL KuaiLe']
+				families: ['Staatliches']
 			},
 			active: () => this.haveLoaded()
 		})

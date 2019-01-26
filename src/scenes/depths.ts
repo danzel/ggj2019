@@ -7,5 +7,7 @@ export const Depths = {
 	telegraph: 7,
 
 	overlay: 9,
-	smokeOverlay: 10
+	smokeOverlay: 10,
+
+	mostOverlay: 11,
 };
