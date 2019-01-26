@@ -34,6 +34,7 @@ export class GameScene extends Phaser.Scene {
 	smokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	houseSmokeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	timerText: Phaser.GameObjects.Text;
 
 	constructor() {
 		super({ key: 'game' });
@@ -87,6 +88,16 @@ export class GameScene extends Phaser.Scene {
 		//debug hack thing
 		this.matter.add.mouseSpring({});
 
+		this.timerText = this.add.text(1920 / 2, 40, "TODO", {
+			fontFamily: 'Staatliches',
+			fontSize: '60px',
+			color: '#ffffff',
+			stroke: '#000000',
+			strokeThickness: 4,
+		});
+		this.timerText.setOrigin(0.5, 0.5);
+		this.timerText.setDepth(Depths.mostOverlay);
+
 
 		/*this.smokeParticles = this.add.particles('smoke');
 		this.smokeEmitter = this.smokeParticles.createEmitter({
@@ -117,6 +128,8 @@ export class GameScene extends Phaser.Scene {
 				b.setPosition(0, b.y - (1024 * this.backgrounds.length));
 			}
 		});
+
+		this.timerText.text = (time / 1000).toFixed(1);
 
 
 		this.moveScene(time, delta);
@@ -204,6 +217,8 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		this.topWall.setPosition(1920 / 2, this.cameras.main.scrollY - 20);
+
+		this.timerText.setPosition(1920 / 2, this.cameras.main.scrollY + 30);
 
 	}
 

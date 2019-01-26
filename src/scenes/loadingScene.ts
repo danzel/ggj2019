@@ -46,6 +46,12 @@ export class LoadingScene extends Phaser.Scene {
 			frameHeight: 128
 		});
 
+		
+		this.load.spritesheet('harpoon', require('../assets/harpoon.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
+
 		WebFont.load({
 			custom: {
 				families: ['Staatliches']

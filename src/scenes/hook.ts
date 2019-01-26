@@ -4,7 +4,7 @@ import { Depths } from "./depths";
 
 const telegraphTime = 1300;
 
-const radius = 50;
+const radius = 30;
 
 export class Hook {
 	telegraph: Phaser.GameObjects.Image;
@@ -36,7 +36,13 @@ export class Hook {
 		if (this.startedTelegraph && this.scene.time.now > this.startedTelegraph + telegraphTime) {
 			this.startedTelegraph = undefined;
 
-			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'hook');
+			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'harpoon');
+			console.log(this.telegraph.angle);
+			let frame = (Math.round((this.telegraph.angle + 270) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
+			console.log(frame);
+			this.image.setFrame(frame);
+
+
 			this.image.setCircle(radius, {});
 			this.image.setDepth(Depths.normal);
 
@@ -46,7 +52,7 @@ export class Hook {
 			this.body.isSensor = true;
 			this.body.frictionAir = 0.08;
 
-			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0025));
+			this.image.applyForce(this.destination.clone().subtract(this.source).scale(0.0025 / 5 + this.scene.intensity * 0.0003));
 
 			this.scene.add.tween({
 				targets: this.telegraph,
