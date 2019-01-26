@@ -21,7 +21,7 @@ export class Boss {
 		});
 
 		
-		this.dirtEmitter = this.scene.dirtParticles.createEmitter(<any>{
+		this.dirtEmitter = this.scene.overParticles.createEmitter(<any>{
 			alpha: { start: 1, end: 0, ease: Phaser.Math.Easing.Cubic.In },
 			lifespan: { min: 100, max: 3000 },
 			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 10) },
