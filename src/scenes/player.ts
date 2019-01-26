@@ -41,6 +41,7 @@ export class Player {
 
 	missileCount = 10;
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+	lastDirectionalPos: Phaser.Math.Vector2;
 	
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'home_1');
@@ -106,6 +107,7 @@ export class Player {
 
 		if (isDirectional) {
 			this.image.setFrame((Math.floor(Phaser.Math.RadToDeg(controllerAngle.angle()) / 360 * 4 * 8) + 8 + 16) % (4 * 8));
+			this.lastDirectionalPos = controllerAngle.clone();
 		}
 
 		if (this.attachedHooks.length > 0) {
@@ -167,7 +169,13 @@ export class Player {
 			}
 		}
 
-		this.smokeEmitter.setPosition(this.image.x, this.image.y - 90);
+		if (this.lastDirectionalPos) {
+			var angle = this.lastDirectionalPos.clone().normalize().scale(10)
+
+			this.smokeEmitter.setPosition(this.image.x - angle.y, this.image.y - 100 + angle.x);
+		} else {
+			this.smokeEmitter.setPosition(this.image.x, this.image.y - 90);
+		}
 
 		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
 		this.shakeToBreak.setPosition(this.image.x, this.image.y);
