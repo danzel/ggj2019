@@ -39,10 +39,11 @@ export class Player {
 
 	missilePress = new JustDown();
 
-	missileCount = 1000;
+	missileCount = 10;
 	
 	constructor(private scene: GameScene, public padIndex: number) {
-		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'todo');
+		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'player');
+		this.image.setScale(0.24);
 		this.image.setCircle(playerRadius, {});
 		scene.normalGroup.add(this.image);
 
@@ -102,6 +103,7 @@ export class Player {
 			this.gfx.setAngle(Phaser.Math.RadToDeg(controllerAngle.angle()) - 90);
 		}
 
+		this.image.setAngle(0);
 
 		if (this.attachedHooks.length > 0) {
 			this.shakeToBreakAmount += Math.abs(this.lastControllerPos.x - controllerAngle.x);

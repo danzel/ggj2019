@@ -29,6 +29,7 @@ export class GameScene extends Phaser.Scene {
 		player: Player,
 		force: Phaser.Math.Vector2
 	}>();
+	backgrounds: Phaser.GameObjects.TileSprite[];
 
 	constructor() {
 		super({ key: 'game' });
@@ -40,6 +41,12 @@ export class GameScene extends Phaser.Scene {
 
 		//this.cameras.main.shake(1000);
 		//new Phaser.Cameras.Scene2D.Effects.Shake(this.cameras.main).start(1000);
+		
+		this.backgrounds = [
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5).setPosition(0, 1024),
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5),
+			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0,0).setTileScale(0.5, 0.5).setPosition(0, -1024),
+		]
 
 		this.shadowGroup = this.add.group();
 		this.normalGroup = this.add.group();
@@ -77,6 +84,13 @@ export class GameScene extends Phaser.Scene {
 		if (this.input.gamepad.total == 0) {
 			return;
 		}
+
+		this.backgrounds.forEach(b => {
+			if (b.y - this.cameras.main.scrollY > 1080) {
+				b.setPosition(0, b.y - (1024 * this.backgrounds.length));
+			}
+		})
+
 
 		this.moveScene(time, delta);
 
