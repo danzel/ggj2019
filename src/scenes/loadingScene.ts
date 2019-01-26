@@ -10,13 +10,11 @@ export class LoadingScene extends Phaser.Scene {
 	}
 
 	preload() {
-		this.load.image('phaser', require('../assets/phaser.png'))
-
 		this.load.image('hook-telegraph', require('../assets/hook/telegraph.png'))
 		this.load.image('player-charge-telegraph', require('../assets/player/chargetelegraph.png'))
 
 		this.load.image('player', require('../assets/player/test.png'))
-		this.load.image('background', require('../assets/grass_background.jpg'))
+		this.load.image('background', require('../assets/dirt_background.jpg'))
 
 		WebFont.load({
 			custom: {

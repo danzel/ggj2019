@@ -43,7 +43,7 @@ export class Player {
 	
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'player');
-		this.image.setScale(0.24);
+		this.image.setScale(0.25);
 		this.image.setCircle(playerRadius, {});
 		scene.normalGroup.add(this.image);
 
