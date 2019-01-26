@@ -260,7 +260,7 @@ export class Player {
 
 
 		//shake house
-		const scale = this.hasTurbo() ? 0.05 : 0.02;
+		const scale = this.hasTurbo() ? 0.06 : 0.02;
 		this.image.setOrigin(0.5 + (scale / 2) - Math.random() * scale, 0.5 + (scale / 2) - Math.random() * scale);
 
 		const trackScale = this.hasTurbo() ? 0.03 : 0.01;
