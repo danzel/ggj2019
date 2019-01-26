@@ -51,13 +51,15 @@ export class GameScene extends Phaser.Scene {
 
 	keepOnScreenThings: Array<ThingToMove>;
 	boss: Boss;
+	
 	staticShapeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	dirtParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	overParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	
 	playerDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	boxDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	hookDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	winningPlayerImage: Phaser.GameObjects.Image;
-	overParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	hookHitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
 	constructor() {
