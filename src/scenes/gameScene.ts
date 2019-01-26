@@ -235,6 +235,25 @@ export class GameScene extends Phaser.Scene {
 		//this.smokeEmitter.setBlendMode(Phaser.BlendModes.);
 		this.smokeEmitter.setFrequency(100);
 		this.smokeEmitter.tint.defaultValue = 0xff0000;*/
+
+		let zoom = this.add.image(1920 / 2, 1080/2, 'zoom');
+		zoom.setDepth(Depths.gameOverOverlay);
+		this.add.tween({
+			targets: zoom,
+			scaleX: 20,
+			scaleY: 20,
+			onComplete: () => {
+				this.add.tween({
+					targets: zoom,
+					alpha: 0,
+					duration: 500,
+					onComplete: () => {
+						zoom.destroy();
+
+					}
+				})
+			}
+		});
 	}
 
 
