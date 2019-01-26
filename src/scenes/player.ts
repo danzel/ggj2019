@@ -95,6 +95,8 @@ export class Player {
 	vibrate() {
 		var pad = this.scene.input.gamepad.getPad(this.padIndex);
 		(<any>pad.vibration).playEffect(pad.vibration.type, { duration: 100, strongMagnitude: 1, weakMagnitude: 1 });
+
+		this.scene.cameras.main.shake(100, 0.02);
 	}
 
 	grantPowerup(powerup: Powerup) {
