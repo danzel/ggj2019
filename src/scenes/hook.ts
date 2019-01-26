@@ -88,6 +88,14 @@ export class Hook {
 			this.chainTile.setAngle(Phaser.Math.RadToDeg(diff.angle()) - 90);
 		}
 
+		if (this.image) {
+			var speed = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
+
+			if (speed > 4) {
+				this.scene.boxDirtEmitter.emitParticleAt(this.image.x, this.image.y);
+			}
+		}
+
 	}
 
 	connectToPlayer(player: Player) {

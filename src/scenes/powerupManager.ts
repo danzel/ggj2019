@@ -61,6 +61,14 @@ export class PowerupBox {
 				onComplete: () => this.telegraph.destroy()
 			})
 		}
+
+		if (this.image) {
+			var speed = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
+
+			if (speed > 4) {
+				this.scene.boxDirtEmitter.emitParticleAt(this.image.x, this.image.y);
+			}
+		}
 	}
 }
 

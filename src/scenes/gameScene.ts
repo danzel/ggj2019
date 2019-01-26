@@ -54,6 +54,8 @@ export class GameScene extends Phaser.Scene {
 	staticShapeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	dirtParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	playerDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+	boxDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+	hookDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	winningPlayerImage: Phaser.GameObjects.Image;
 
 	constructor() {
@@ -105,6 +107,40 @@ export class GameScene extends Phaser.Scene {
 		});
 		this.playerDirtEmitter.frequency = -1;
 
+		
+		this.boxDirtEmitter = this.dirtParticles.createEmitter(<any>{
+			alpha: { start: 0.4, end: 0, ease: Phaser.Math.Easing.Cubic.In },
+			lifespan: { min: 100, max: 3000 },
+			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 10) },
+			//speed: { min: 0, max: 200 },
+			//angle: { min: 270 - 10, max: 270 + 10 },
+			scale: { min: 1, max: 2 },
+			frame: {
+				frames: ['dirt_01', 'dirt_02', 'dirt_03']
+			},
+
+			tint: 0xc7b896,
+
+			blendMode: Phaser.BlendModes.DARKEN
+		});
+		this.boxDirtEmitter.frequency = -1;
+
+		this.hookDirtEmitter = this.dirtParticles.createEmitter(<any>{
+			alpha: { start: 0.4, end: 0, ease: Phaser.Math.Easing.Cubic.In },
+			lifespan: { min: 100, max: 3000 },
+			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 10) },
+			//speed: { min: 0, max: 200 },
+			//angle: { min: 270 - 10, max: 270 + 10 },
+			scale: { min: 0.3, max: 0.7 },
+			frame: {
+				frames: ['dirt_01', 'dirt_02', 'dirt_03']
+			},
+
+			tint: 0xc7b896,
+
+			blendMode: Phaser.BlendModes.DARKEN
+		});
+		this.hookDirtEmitter.frequency = -1;
 
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);
