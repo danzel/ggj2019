@@ -51,8 +51,7 @@ export class HookManager {
 
 
 		//if (this.hooks.length < 5) { 
-		if (this.hooks.length == 0 || time > this.lastHook + timeBetweenHooks / this.scene.intensity) {
-
+		if (this.scene.intensity > 0 && (this.hooks.length == 0 || time > this.lastHook + timeBetweenHooks / this.scene.intensity)) {
 
 			this.lastHook = time;
 

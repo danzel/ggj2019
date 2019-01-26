@@ -51,11 +51,11 @@ export class GameScene extends Phaser.Scene {
 
 	keepOnScreenThings: Array<ThingToMove>;
 	boss: Boss;
-	
+
 	staticShapeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	dirtParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
 	overParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
-	
+
 	playerDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	boxDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	hookDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -69,11 +69,11 @@ export class GameScene extends Phaser.Scene {
 	create() {
 		console.log('create game');
 
-		this.intensity = 0.1;
+		this.intensity = 0;
 		this.gameIsOver = false;
 		this.keepOnScreenThings = new Array<ThingToMove>();
 
-		
+
 		this.forcesToApply.length = 0;
 
 		//this.cameras.main.shake(1000);
@@ -93,7 +93,7 @@ export class GameScene extends Phaser.Scene {
 
 		this.houseSmokeParticles = this.add.particles('small_smoke');
 		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
-		
+
 		this.overParticles = this.add.particles('shapes');
 		this.overParticles.setDepth(Depths.smokeOverlay);
 
@@ -114,7 +114,7 @@ export class GameScene extends Phaser.Scene {
 		});
 		this.playerDirtEmitter.frequency = -1;
 
-		
+
 		this.boxDirtEmitter = this.dirtParticles.createEmitter(<any>{
 			alpha: { start: 0.4, end: 0, ease: Phaser.Math.Easing.Cubic.In },
 			lifespan: { min: 100, max: 3000 },
@@ -151,7 +151,7 @@ export class GameScene extends Phaser.Scene {
 
 
 
-		
+
 		this.hookHitEmitter = this.overParticles.createEmitter(<any>{
 			alpha: { start: 0.5, end: 0, ease: Phaser.Math.Easing.Cubic.In },
 			lifespan: { min: 100, max: 3000 },
@@ -241,14 +241,16 @@ export class GameScene extends Phaser.Scene {
 		if (this.input.gamepad.total == 0) {
 			return;
 		}
-		
+
 		if (this.startTime == 0) {
 			this.startTime = time;
 		}
 
 		let elapsed = (time - this.startTime);
 
-		if (elapsed < 20000) {
+		if (elapsed < 2000) {
+			this.intensity = 0;
+		} else if (elapsed < 20000) {
 			this.intensity = 0.5 + elapsed / 40000;
 		} else if (elapsed < 40000) {
 			this.intensity = 1 + (elapsed - 20000) / 40000;
@@ -316,7 +318,23 @@ export class GameScene extends Phaser.Scene {
 			if (deadSum == 3) {
 				let w = this.players.findIndex(p => !p.isDead);
 
-				let winText = this.add.text(1920 / 2, 400, "Player " + (1 + w) + " wins!", {
+				let text = '';
+				switch (w) {
+					case 0:
+						text = "Blue Home";
+						break;
+					case 1:
+						text = "Red Home";
+						break;
+					case 2:
+						text = "Green Home";
+						break;
+					case 3:
+						text = "Purple Home";
+						break;
+				}
+
+				let winText = this.add.text(1920 / 2, 400, text + " wins!", {
 					fontFamily: 'Staatliches',
 					fontSize: '90px',
 					color: '#ffffff',
@@ -325,8 +343,8 @@ export class GameScene extends Phaser.Scene {
 				});
 				winText.setOrigin(0.5, 0.5);
 				winText.setDepth(Depths.gameOverOverlay);
-				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
-				
+				this.keepOnScreenThings.push({ go: <any>winText, x: 1920 / 2, y: 400 });
+
 
 				this.winningPlayerImage = this.add.image(1920, 500, 'home_' + (w + 1))
 				this.winningPlayerImage.setScale(2);
@@ -346,7 +364,7 @@ export class GameScene extends Phaser.Scene {
 				});
 				winText.setOrigin(0.5, 0.5);
 				winText.setDepth(Depths.gameOverOverlay);
-				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
+				this.keepOnScreenThings.push({ go: <any>winText, x: 1920 / 2, y: 400 });
 			}
 
 			if (this.gameIsOver) {
@@ -377,7 +395,7 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		if (this.winningPlayerImage) {
-			this.winningPlayerImage.setFrame(Math.floor(time / 60) % (4*8));
+			this.winningPlayerImage.setFrame(Math.floor(time / 60) % (4 * 8));
 		}
 
 		this.forcesToApply.forEach(f => {

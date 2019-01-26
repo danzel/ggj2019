@@ -57,7 +57,7 @@ export class Player {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
 		this.tracks.setDepth(Depths.tracks);
 
-		this.image = scene.matter.add.image(350 * (1 + padIndex), 100, 'home_' + (1 + padIndex));
+		this.image = scene.matter.add.image((1920 / 5) * (1 + padIndex), 200, 'home_' + (1 + padIndex));
 		this.image.setCircle(playerRadius, {});
 		this.image.setDepth(Depths.normal);
 
