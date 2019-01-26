@@ -259,7 +259,7 @@ export class GameScene extends Phaser.Scene {
 					strokeThickness: 8,
 				});
 				winText.setOrigin(0.5, 0.5);
-				winText.setDepth(Depths.mostOverlay);
+				winText.setDepth(Depths.gameOverOverlay);
 				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
 				
 
@@ -273,7 +273,7 @@ export class GameScene extends Phaser.Scene {
 					strokeThickness: 8,
 				});
 				winText.setOrigin(0.5, 0.5);
-				winText.setDepth(Depths.mostOverlay);
+				winText.setDepth(Depths.gameOverOverlay);
 				this.keepOnScreenThings.push({ go: <any>winText, x: 1920/ 2, y: 400});
 			}
 
@@ -286,7 +286,7 @@ export class GameScene extends Phaser.Scene {
 				});
 				g.alpha = 0;
 				g.fillRect(0, 0, 1920, 1080);
-				g.setDepth(Depths.overlay);
+				g.setDepth(Depths.mostOverlay);
 
 				this.add.tween({
 					targets: g,

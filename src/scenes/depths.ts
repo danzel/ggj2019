@@ -14,4 +14,7 @@ export const Depths = {
 	smokeOverlay: 10,
 
 	mostOverlay: 11,
+
+
+	gameOverOverlay: 12,
 };
