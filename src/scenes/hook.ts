@@ -69,11 +69,13 @@ export class Hook {
 			player
 		});
 
+		this.source.y += 1000;
+
 		var distance = Phaser.Math.Distance.Between(this.image.x, this.image.y, this.source.x, this.source.y);
 
 		const defaultPieceLength = 50;
-		const ropeWidth = 20;
-		const pieceCount = Math.floor(distance / defaultPieceLength);
+		const ropeWidth = 4;
+		const pieceCount = Math.floor(distance / defaultPieceLength);// * 1.4;
 		const pieceLength = distance / pieceCount;
 
 		const pieceLengthWithOverlap = pieceLength + 20;
@@ -89,8 +91,9 @@ export class Hook {
 		//https://labs.phaser.io/edit.html?src=src\physics\matterjs\bridge.js
 
 		//initial anchor
-		var previous = <Matter.Body>this.scene.matter.add.rectangle(this.source.x, this.source.y, 10, 10, {});
-		previous.isStatic = true;
+		var previous = <Matter.Body>this.scene.matter.add.circle(this.source.x, this.source.y, 50, {}, undefined);
+		previous.frictionAir = 0.08;
+		//previous.isStatic = true;
 
 		let connectPoint = angleVector.clone().scale(pieceLength / 2);
 		let playerConnectPoint = angleVector.clone().scale(playerRadius);
