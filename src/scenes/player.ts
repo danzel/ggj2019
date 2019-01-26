@@ -51,6 +51,7 @@ export class Player {
 	repulserTime = -99999;
 
 	isDead = false
+	shakeToBreakSprite: Phaser.GameObjects.Image;
 
 	constructor(private scene: GameScene, public padIndex: number) {
 		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
@@ -67,7 +68,7 @@ export class Player {
 		this.body.friction = 1;
 		this.body.restitution = 1;
 
-		this.shakeToBreak = this.scene.add.text(100, 100, "SPIN TO BREAK", {
+		this.shakeToBreak = this.scene.add.text(100, 100, "SPIN TO BREAK FREE", {
 			fontFamily: 'Staatliches',
 			fontSize: '40px',
 			color: '#ffffff',
@@ -78,6 +79,12 @@ export class Player {
 		this.shakeToBreak.setOrigin(0.5, 3);
 		this.shakeToBreak.setDepth(Depths.mostOverlay);
 		this.shakeToBreak.setVisible(false);
+
+		this.shakeToBreakSprite = this.scene.add.image(100, 100, "spin_break");
+		this.shakeToBreakSprite.setOrigin(0.5, 2.7);
+		this.shakeToBreakSprite.setVisible(false);
+		this.shakeToBreakSprite.setDepth(Depths.mostOverlay);
+		this.shakeToBreakSprite.setScale(0.25);
 
 
 		this.shakeBar = new HealthBar(this.scene, 0xffffff, 0xff0000, 100);
@@ -231,6 +238,10 @@ export class Player {
 
 		this.shakeToBreak.setVisible(this.attachedHooks.length > 0);
 		this.shakeToBreak.setPosition(this.image.x + (6 * Math.random() - 3), this.image.y + (6 * Math.random() - 3));
+
+		this.shakeToBreakSprite.setVisible(this.attachedHooks.length > 0);
+		this.shakeToBreakSprite.setPosition(this.image.x + (6 * Math.random() - 3), this.image.y + (6 * Math.random() - 3));
+		this.shakeToBreakSprite.setFrame(Math.floor(time / 100) % 4);
 
 		this.shakeBar.setVisible(this.attachedHooks.length > 0);
 		this.shakeBar.update(this.image.x, this.image.y - 70, this.shakeToBreakAmount / requiredShakeToBreak);
