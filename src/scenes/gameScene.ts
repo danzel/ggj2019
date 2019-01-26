@@ -51,6 +51,9 @@ export class GameScene extends Phaser.Scene {
 
 	keepOnScreenThings: Array<ThingToMove>;
 	boss: Boss;
+	staticShapeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	dirtParticles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+	playerDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
 	constructor() {
 		super({ key: 'game' });
@@ -74,6 +77,33 @@ export class GameScene extends Phaser.Scene {
 			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0, 0).setTileScale(0.5, 0.5).setDepth(Depths.background),
 			this.add.tileSprite(0, 0, 1920, 1024, 'background').setOrigin(0, 0).setTileScale(0.5, 0.5).setPosition(0, -1024).setDepth(Depths.background),
 		]
+
+		this.dirtParticles = this.add.particles('shapes');
+		this.dirtParticles.setDepth(Depths.dirtOverTracks);
+
+		this.staticShapeParticles = this.add.particles('shapes');
+		this.staticShapeParticles.setDepth(Depths.smokeOverlay);
+
+		this.houseSmokeParticles = this.add.particles('small_smoke');
+		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
+
+		this.playerDirtEmitter = this.dirtParticles.createEmitter(<any>{
+			alpha: { start: 1, end: 0, ease: Phaser.Math.Easing.Cubic.In },
+			lifespan: { min: 100, max: 3000 },
+			emitZone: { type: 'random', source: new Phaser.Geom.Circle(0, 0, 10) },
+			//speed: { min: 0, max: 200 },
+			//angle: { min: 270 - 10, max: 270 + 10 },
+			scale: { min: 0.3, max: 0.4 },
+			frame: {
+				frames: ['dirt_01', 'dirt_02', 'dirt_03']
+			},
+
+			tint: 0xc7b896,
+
+			blendMode: Phaser.BlendModes.DARKEN
+		});
+		this.playerDirtEmitter.frequency = -1;
+
 
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);
@@ -104,9 +134,6 @@ export class GameScene extends Phaser.Scene {
 		(<any>bWall).deathWall = true;
 
 
-
-		this.houseSmokeParticles = this.add.particles('small_smoke');
-		this.houseSmokeParticles.setDepth(Depths.smokeOverlay);
 
 		this.players = [
 			new Player(this, 0),
@@ -309,6 +336,8 @@ export class GameScene extends Phaser.Scene {
 		this.keepOnScreenThings.forEach(t => {
 			t.go.setPosition(t.x, this.cameras.main.scrollY + t.y);
 		});
+		this.staticShapeParticles.setPosition(0, this.cameras.main.scrollY);
+
 	}
 
 	collisionStart(ev: Matter.IEventCollision<Matter.Engine>) {

@@ -160,6 +160,16 @@ export class Player {
 			this.image.setFrame(frame);
 			this.tracks.setFrame(frame);
 			this.lastDirectionalPos = controllerAngle.clone();
+
+
+			let back = controllerAngle.clone().normalize().scale(-50);
+
+			let a = Phaser.Math.Rotate(new Phaser.Geom.Point(back.x, back.y), 15);
+			this.scene.playerDirtEmitter.emitParticleAt(this.image.x + a.x, this.image.y + a.y, 1);
+
+			
+			a = Phaser.Math.Rotate(new Phaser.Geom.Point(back.x, back.y), -15);
+			this.scene.playerDirtEmitter.emitParticleAt(this.image.x + a.x, this.image.y + a.y, 1);
 		}
 
 		if (this.attachedHooks.length > 0) {

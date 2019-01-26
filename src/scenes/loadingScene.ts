@@ -63,6 +63,8 @@ export class LoadingScene extends Phaser.Scene {
 		this.load.image('chain', require('../assets/chain.png'));
 		this.load.image('chain_tile', require('../assets/chain_tile.png'));
 
+		this.load.atlas('shapes', require('../assets/particles/shapes.png'), require('../assets/particles/shapes.json'));
+
 		WebFont.load({
 			custom: {
 				families: ['Staatliches']

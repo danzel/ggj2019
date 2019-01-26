@@ -73,6 +73,9 @@ export class Hook {
 			this.chainTile = this.scene.add.tileSprite(0, 0, 10, 1000, 'chain_tile');
 			this.chainTile.setDepth(Depths.normal);
 			this.chainTile.alpha = 0.5;
+
+			//var angle = this.source.clone().subtract(this.destination).angle();
+			//this.scene.hookManager.emit(this.source.x, this.source.y - 1150 - this.scene.cameras.main.scrollY, Phaser.Math.RadToDeg(angle));
 		}
 
 		if (this.chainTile && this.image) {

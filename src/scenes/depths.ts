@@ -5,6 +5,9 @@ export const Depths = {
 	telegraph: 2,
 
 	tracks: 2.5,
+
+	dirtOverTracks: 2.7,
+	
 	normal: 3,
 
 	overlay: 9,

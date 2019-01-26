@@ -18,12 +18,25 @@ module.exports = {
             { test: /\.ts$/, loader: 'ts-loader', exclude: '/node_modules/' },
             { test: /phaser\.js$/, loader: 'expose-loader?Phaser' },
             { test: /\.css$/, use: [ MiniCssExtractPlugin.loader, "css-loader" ] },
+            //{ test: /\.json$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.ttf$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.png$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.jpg$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.svg$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.m4a$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.opus$/, loader: 'file-loader?name=[hash].[ext]' },
+            {
+                type: 'javascript/auto',
+                test: /\.json$/,
+                use: [
+                    {
+                      loader: 'file-loader',
+                      options: {
+                          name: "./plugin-config/[name].[ext]"
+                      }
+                    }
+                ]
+            }
         ]
     },
     plugins: [
