@@ -24,6 +24,11 @@ export class LoadingScene extends Phaser.Scene {
 			frameHeight: 256
 		});
 
+		this.load.spritesheet('tracks', require('../assets/player/tracks.png'), {
+			frameWidth: 256,
+			frameHeight: 256
+		});
+
 		WebFont.load({
 			custom: {
 				families: ['ZCOOL KuaiLe']

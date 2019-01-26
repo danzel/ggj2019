@@ -42,8 +42,12 @@ export class Player {
 	missileCount = 10;
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	lastDirectionalPos: Phaser.Math.Vector2;
+	tracks: Phaser.GameObjects.Image;
 	
 	constructor(private scene: GameScene, public padIndex: number) {
+		this.tracks = scene.add.image(200 * (1 + padIndex), 100, 'tracks');
+		this.tracks.setDepth(Depths.tracks);
+
 		this.image = scene.matter.add.image(200 * (1 + padIndex), 100, 'home_1');
 		this.image.setCircle(playerRadius, {});
 		this.image.setDepth(Depths.normal);
@@ -106,7 +110,9 @@ export class Player {
 		this.image.setAngle(0);
 
 		if (isDirectional) {
-			this.image.setFrame((Math.floor(Phaser.Math.RadToDeg(controllerAngle.angle()) / 360 * 4 * 8) + 8 + 16) % (4 * 8));
+			let frame = (Math.floor(Phaser.Math.RadToDeg(controllerAngle.angle()) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
+			this.image.setFrame(frame);
+			this.tracks.setFrame(frame);
 			this.lastDirectionalPos = controllerAngle.clone();
 		}
 
@@ -182,5 +188,7 @@ export class Player {
 		
 		this.shakeBar.setVisible(this.attachedHooks.length > 0);
 		this.shakeBar.update(this.image.x, this.image.y - 40, this.shakeToBreakAmount / requiredShakeToBreak);
+
+		this.tracks.setPosition(this.image.x, this.image.y + 20);
 	}
 }
