@@ -267,16 +267,21 @@ export class GameScene extends Phaser.Scene {
 		}
 
 		let elapsed = (time - this.startTime);
-
+//elapsed += 40000;
 		if (elapsed < 2000) {
 			this.intensity = 0;
-		} else if (elapsed < 20000) {
-			this.intensity = 0.5 + elapsed / 40000;
-		} else if (elapsed < 40000) {
-			this.intensity = 1 + (elapsed - 20000) / 40000;
+//			console.log('a', this.intensity);
+		} else if (elapsed < 32000) {
+			this.intensity = 0.3 + 0.5 * (elapsed - 2000) / 30000;
+//			console.log('b', this.intensity);
+		} else if (elapsed < 52000) {
+			this.intensity = 0.8 + 0.5 * (elapsed - 32000) / 20000;
+///			console.log('c', this.intensity);
 		} else {
-			this.intensity = 1.5 + (elapsed - 40000) / 60000;
+			this.intensity = 1.3 + (elapsed - 52000) / 30000;
+	//		console.log('d', this.intensity);
 		}
+		//console.log(this.intensity);
 
 		this.backgrounds.forEach(b => {
 			if (b.y - this.cameras.main.scrollY > 1080) {

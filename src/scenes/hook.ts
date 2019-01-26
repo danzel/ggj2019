@@ -71,7 +71,7 @@ export class Hook {
 			this.source.y += 1000;
 
 			this.chainTile = this.scene.add.tileSprite(0, 0, 10, 1000, 'chain_tile');
-			this.chainTile.setDepth(Depths.normal);
+			this.chainTile.setDepth(Depths.chainNothing);
 			this.chainTile.alpha = 0.5;
 
 			//var angle = this.source.clone().subtract(this.destination).angle();

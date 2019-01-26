@@ -55,12 +55,22 @@ export class HookManager {
 
 			this.lastHook = time;
 
-			let sourceX = 200 + (Math.random() * (1920 - 400));
+			let sourceX = (Math.random() * 1920);
 			//let sourceX = 200 + this.hooks.length * 200;
 			let source = new Phaser.Math.Vector2(sourceX, 1080 + this.scene.cameras.main.scrollY);
 
 			let destX = 200 + (Math.random() * (1920 - 400));
-			let dest = new Phaser.Math.Vector2(destX, this.scene.cameras.main.scrollY);
+			let dest = new Phaser.Math.Vector2(destX, this.scene.cameras.main.scrollY - 250);
+
+			if (Math.random() > 0.5) {
+				var alivePlayers = this.scene.players.filter(p => !p.isDead);
+				if (alivePlayers.length > 0) {
+					let target = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+
+					destX = target.image.x - 50 + Math.random() * 100;
+					dest = new Phaser.Math.Vector2(destX, this.scene.cameras.main.scrollY - 250);
+				}
+			}
 			//let dest = new Phaser.Math.Vector2(400, this.scene.cameras.main.scrollY);
 
 			//let hook = new Hook(this.scene, new Phaser.Math.Vector2(500, 1080), new Phaser.Math.Vector2(this.players[0].image.x, this.players[1].image.y));

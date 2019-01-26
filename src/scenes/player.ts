@@ -146,7 +146,7 @@ export class Player {
 			strokeThickness: 2
 		});
 		s.setOrigin(0.5, 3);
-		s.setDepth(Depths.mostOverlay);
+		s.setDepth(Depths.smokeOverlay);
 
 		this.scene.add.tween({
 			targets: s,
@@ -227,7 +227,7 @@ export class Player {
 		}
 
 		//Charging
-		if (p.R1) {
+		if (p.R1 || p.A || p.B || p.X || p.Y) {
 			if (!this.preparingToCharge) {
 				this.preparingToCharge = true;
 				this.chargeStartTime = time;
@@ -258,11 +258,11 @@ export class Player {
 			this.image.applyForce(force);
 		}
 
-		if (this.missilePress.isJustDown(p.A) && this.missileCount > 0 && isDirectional) {
+		/*if (this.missilePress.isJustDown(p.A) && this.missileCount > 0 && isDirectional) {
 			this.missileCount--;
 
 			this.scene.missileManager.fireMissile(this, controllerAngle);
-		}
+		}*/
 
 		//Graphics updates
 		if (this.chargeTelegraph) {

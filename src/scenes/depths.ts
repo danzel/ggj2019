@@ -4,6 +4,8 @@ export const Depths = {
 	shadow: 1.8,
 	telegraph: 2,
 
+	chainNothing: 2.4,
+
 	tracks: 2.5,
 
 	dirtOverTracks: 2.7,
