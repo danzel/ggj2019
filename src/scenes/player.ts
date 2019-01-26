@@ -44,7 +44,7 @@ export class Player {
 
 	missileCount = 10;
 	smokeEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
-	lastDirectionalPos: Phaser.Math.Vector2;
+	lastDirectionalPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 1);
 	tracks: Phaser.GameObjects.Image;
 
 	speed = 1;

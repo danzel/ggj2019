@@ -61,6 +61,7 @@ export class GameScene extends Phaser.Scene {
 	hookDirtEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 	winningPlayerImage: Phaser.GameObjects.Image;
 	hookHitEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+	winningPlayerTracksImage: Phaser.GameObjects.Image;
 
 	constructor() {
 		super({ key: 'game' });
@@ -346,12 +347,21 @@ export class GameScene extends Phaser.Scene {
 				this.keepOnScreenThings.push({ go: <any>winText, x: 1920 / 2, y: 400 });
 
 
+
+				this.winningPlayerTracksImage = this.add.image(1920, 500, 'tracks')
+				this.winningPlayerTracksImage.setScale(2);
+				this.winningPlayerTracksImage.setDepth(Depths.gameOverOverlay);
+				this.keepOnScreenThings.push({
+					go: <any>this.winningPlayerTracksImage, x: 1920 / 2, y: 700 + 40
+				});
+
 				this.winningPlayerImage = this.add.image(1920, 500, 'home_' + (w + 1))
 				this.winningPlayerImage.setScale(2);
 				this.winningPlayerImage.setDepth(Depths.gameOverOverlay);
 				this.keepOnScreenThings.push({
 					go: <any>this.winningPlayerImage, x: 1920 / 2, y: 700
 				});
+
 
 			} else if (deadSum == 4) {
 
@@ -396,6 +406,7 @@ export class GameScene extends Phaser.Scene {
 
 		if (this.winningPlayerImage) {
 			this.winningPlayerImage.setFrame(Math.floor(time / 60) % (4 * 8));
+			this.winningPlayerTracksImage.setFrame(Math.floor(time / 60) % (4 * 8));
 		}
 
 		this.forcesToApply.forEach(f => {
