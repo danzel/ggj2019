@@ -20,6 +20,10 @@ export class LoadingScene extends Phaser.Scene {
 		this.load.image('smoke', require('../assets/smoke.png'))
 		this.load.image('small_smoke', require('../assets/small_smoke.png'))
 
+		this.load.spritesheet('boss_fingers', require('../assets/boss_fingers.png'), {
+			frameWidth: 512,
+			frameHeight: 512
+		});
 		
 		this.load.spritesheet('spin_break', require('../assets/spin_break.png'), {
 			frameWidth: 256,

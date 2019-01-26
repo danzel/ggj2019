@@ -4,6 +4,7 @@ import { HookManager } from "./hookManager";
 import { MissileManager, Missile } from "./missileManager";
 import { Depths } from "./depths";
 import { PowerupManager, PowerupBox } from "./powerupManager";
+import { Boss } from "./boss";
 
 const wallVisibleWidth = 50;
 
@@ -49,6 +50,7 @@ export class GameScene extends Phaser.Scene {
 	gameIsOver: boolean;
 
 	keepOnScreenThings: Array<ThingToMove>;
+	boss: Boss;
 
 	constructor() {
 		super({ key: 'game' });
@@ -76,6 +78,7 @@ export class GameScene extends Phaser.Scene {
 		this.hookManager = new HookManager(this);
 		this.missileManager = new MissileManager(this);
 		this.powerUpManager = new PowerupManager(this);
+		this.boss = new Boss(this);
 
 		this.sideWalls = [
 			<any>this.matter.add.sprite(0, 1080 / 2, '').setRectangle(wallVisibleWidth * 2, 1080 * 3, {}),
@@ -175,6 +178,7 @@ export class GameScene extends Phaser.Scene {
 		this.hookManager.update(time, delta);
 		this.missileManager.update(time, delta);
 		this.powerUpManager.update(time, delta);
+		this.boss.update(time, delta);
 
 		this.players.forEach(p => {
 			p.update(time, delta);
