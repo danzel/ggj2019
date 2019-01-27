@@ -529,6 +529,13 @@ export class GameScene extends Phaser.Scene {
 			}
 			else if (bodyB.player && bodyA.deathWall) {
 				bodyB.player.die();
+			} else if (bodyA.player && bodyB.player) {
+				var speedA = new Phaser.Math.Vector2(bodyA.player.body.velocity.x, bodyA.player.body.velocity.y).length();
+				var speedb = new Phaser.Math.Vector2(bodyB.player.body.velocity.x, bodyB.player.body.velocity.y).length();
+
+				if (speedA > 10 || speedb > 10) {
+					this.sound.add('collision').play();
+				}
 			}
 		});
 	}

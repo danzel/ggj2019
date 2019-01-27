@@ -69,6 +69,11 @@ export class HookManager {
 
 					destX = target.image.x - 50 + Math.random() * 100;
 					dest = new Phaser.Math.Vector2(destX, this.scene.cameras.main.scrollY - 250);
+
+					if (Math.random() > 0.3) {
+						sourceX = destX - 100 + 200 * Math.random();
+						source = new Phaser.Math.Vector2(sourceX, 1080 + this.scene.cameras.main.scrollY);
+					}
 				}
 			}
 			//let dest = new Phaser.Math.Vector2(400, this.scene.cameras.main.scrollY);

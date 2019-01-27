@@ -84,6 +84,8 @@ export class LoadingScene extends Phaser.Scene {
 
 		this.load.audio('engine', require('../assets/sound/engine.wav'));
 
+		this.load.audio('collision', require('../assets/sound/collision.mp3'));
+
 
 		WebFont.load({
 			custom: {
