@@ -108,6 +108,9 @@ export class Player {
 
 	die() {
 		this.isDead = true;
+
+		var soundIndex = 1 + Math.floor(3 * Math.random());
+		this.scene.sound.add('death_' + soundIndex).play();
 	}
 
 	vibrate() {

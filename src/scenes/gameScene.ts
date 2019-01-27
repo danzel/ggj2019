@@ -254,6 +254,34 @@ export class GameScene extends Phaser.Scene {
 				})
 			}
 		});
+
+
+		let vol = 0.1;
+		this.sound.add('engine', {
+			loop: true,
+			volume: vol,
+		}).play();
+
+		
+		this.sound.add('engine', {
+			loop: true,
+			volume: vol,
+			delay: 1
+		}).play();
+
+		
+		this.sound.add('engine', {
+			loop: true,
+			volume: vol,
+			delay: 2
+		}).play();
+
+		
+		this.sound.add('engine', {
+			loop: true,
+			volume: vol,
+			delay: 3
+		}).play();
 	}
 
 

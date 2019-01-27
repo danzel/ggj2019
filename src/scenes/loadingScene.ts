@@ -66,6 +66,25 @@ export class LoadingScene extends Phaser.Scene {
 
 		this.load.atlas('shapes', require('../assets/particles/shapes.png'), require('../assets/particles/shapes.json'));
 
+
+		this.load.audio('death_1', require('../assets/sound/death_1.mp3'));
+		this.load.audio('death_2', require('../assets/sound/death_2.mp3'));
+		this.load.audio('death_3', require('../assets/sound/death_3.mp3'));
+
+		this.load.audio('hit_1', require('../assets/sound/hit_1.mp3'));
+
+		this.load.audio('chain_1', require('../assets/sound/chain_1.mp3'));
+		this.load.audio('chain_2', require('../assets/sound/chain_2.mp3'));
+		this.load.audio('chain_3', require('../assets/sound/chain_3.mp3'));
+		this.load.audio('chain_4', require('../assets/sound/chain_4.mp3'));
+		
+		this.load.audio('shoot_1', require('../assets/sound/shoot_1.mp3'));
+		this.load.audio('shoot_2', require('../assets/sound/shoot_2.mp3'));
+		this.load.audio('shoot_3', require('../assets/sound/shoot_3.mp3'));
+
+		this.load.audio('engine', require('../assets/sound/engine.wav'));
+
+
 		WebFont.load({
 			custom: {
 				families: ['Staatliches']

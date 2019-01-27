@@ -45,6 +45,10 @@ export class Hook {
 		if (this.startedTelegraph && this.scene.time.now > this.startedTelegraph + telegraphTime) {
 			this.startedTelegraph = undefined;
 
+			var soundIndex = 1 + Math.floor(3 * Math.random());
+			this.scene.sound.add('shoot_' + soundIndex).play();
+
+
 			this.image = this.scene.matter.add.image(this.source.x, this.source.y, 'harpoon');
 			let frame = (Math.round((this.telegraph.angle + 90) / 360 * 4 * 8) + 8 + 16) % (4 * 8);
 			this.image.setFrame(frame);
@@ -105,6 +109,7 @@ export class Hook {
 		this.chainTile.destroy();
 		this.chainTile = undefined;
 
+
 		const velocity = new Phaser.Math.Vector2(this.body.velocity.x, this.body.velocity.y).length();
 		if (!player.isDead) {
 			this.scene.forcesToApply.push({
@@ -112,8 +117,15 @@ export class Hook {
 				player
 			});
 
-			
+
 			this.scene.hookHitEmitter.emitParticleAt((this.image.x + player.image.x) / 2, (this.image.y + player.image.y) / 2, 10);
+		}
+
+		if (velocity > 10) {
+			this.scene.sound.add('hit_1').play();
+		} else {
+			var soundIndex = 1 + Math.floor(4 * Math.random());
+			this.scene.sound.add('chain_' + soundIndex).play();
 		}
 
 
@@ -172,7 +184,7 @@ export class Hook {
 			this.lastRope = rope;
 		}
 
-		
+
 		//Connect them to the player
 		this.constraintToPlayer = this.scene.matter.add.constraint(previous, player.body, 0, 0.5, {
 			pointA: { x: connectPoint.x, y: connectPoint.y },

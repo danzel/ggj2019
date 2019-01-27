@@ -25,6 +25,8 @@ module.exports = {
             { test: /\.svg$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.m4a$/, loader: 'file-loader?name=[hash].[ext]' },
             { test: /\.opus$/, loader: 'file-loader?name=[hash].[ext]' },
+            { test: /\.mp3$/, loader: 'file-loader?name=[hash].[ext]' },
+            { test: /\.wav$/, loader: 'file-loader?name=[hash].[ext]' },
             {
                 type: 'javascript/auto',
                 test: /\.json$/,
